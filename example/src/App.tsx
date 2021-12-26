@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'cross-ui';
+import { multiply, CrossProvider, Button } from 'cross-ui';
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
@@ -11,9 +11,12 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
+    <CrossProvider>
+      <View style={styles.container}>
+        <Text>Result: {result}</Text>
+        <Button type="filled" onPress={() => null} />
+      </View>
+    </CrossProvider>
   );
 }
 
@@ -22,6 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'red',
   },
   box: {
     width: 60,
