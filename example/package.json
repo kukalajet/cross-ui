@@ -12,6 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "babel-loader": "^8.2.3",
+    "cross-ui": "../",
     "expo": "^42.0.0",
     "expo-splash-screen": "~0.11.2",
     "react": "16.13.1",
