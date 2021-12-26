@@ -1,0 +1,22 @@
+{
+  "name": "cross-ui-example",
+  "displayName": "CrossUi Example",
+  "expo": {
+    "name": "cross-ui-example",
+    "slug": "cross-ui-example",
+    "description": "Example app for cross-ui",
+    "privacy": "public",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
