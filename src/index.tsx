@@ -1,3 +1,5 @@
+export { Icon, Button } from './components';
+
 export function multiply(a: number, b: number): Promise<number> {
   return Promise.resolve(a + b * 1000);
 }
