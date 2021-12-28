@@ -1,1 +1,1 @@
-export { default, Type } from './Icon';
+export { default, Type, Position } from './Icon';

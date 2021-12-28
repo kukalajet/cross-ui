@@ -8,23 +8,15 @@ import {
 import theme from '../../configs/theme';
 import type { Type as Icon } from './Icon';
 
-const filledColor = theme.colors.$onPrimary;
-const unfilledColor = theme.colors.$primary;
 const size = theme.space.$6;
 
 type Props = {
   icon: Icon;
   onPress?: () => void;
-  filled: boolean;
+  color: string;
 };
 
-export default function getIcon({
-  icon,
-  onPress,
-  filled = false,
-}: Props): ReactElement {
-  const color = filled ? filledColor : unfilledColor;
-
+export default function getIcon({ icon, color, onPress }: Props): ReactElement {
   if (icon.pack === 'AntDesign') {
     return (
       <AntDesign

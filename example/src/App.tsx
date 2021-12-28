@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { StyleSheet, View, Text } from 'react-native';
 import { multiply, CrossProvider, Button } from 'cross-ui';
 
@@ -14,12 +13,63 @@ export default function App() {
     <CrossProvider>
       <View style={styles.container}>
         <Text>Result: {result}</Text>
-        <Button
-          icon={{ pack: 'Feather', name: 'x' }}
-          label="test"
-          type="filled"
-          onPress={() => null}
-        />
+        <View style={{ padding: 8 }}>
+          <Button
+            icon={{ pack: 'Feather', name: 'x' }}
+            label="test"
+            type="filled"
+            onPress={() => null}
+          />
+        </View>
+        <View style={{ padding: 8 }}>
+          <Button
+            icon={{ pack: 'Feather', name: 'x' }}
+            label="test"
+            type="elevated"
+            onPress={() => null}
+          />
+        </View>
+        <View style={{ padding: 8 }}>
+          <Button
+            icon={{ pack: 'MaterialIcons', name: 'close' }}
+            label="test"
+            type="outlined"
+            onPress={() => null}
+          />
+        </View>
+        <View style={{ padding: 8 }}>
+          <Button
+            icon={{ pack: 'AntDesign', name: 'close' }}
+            label="test"
+            type="tonal"
+            onPress={() => null}
+          />
+        </View>
+        <View style={{ padding: 8, flexDirection: 'row' }}>
+          <View style={{ paddingEnd: 8 }}>
+            <Button
+              icon={{ pack: 'AntDesign', name: 'close' }}
+              type="elevated"
+              onPress={() => null}
+            />
+          </View>
+          <View style={{ paddingEnd: 8 }}>
+            <Button
+              icon={{ pack: 'AntDesign', name: 'close' }}
+              type="outlined"
+              onPress={() => null}
+            />
+          </View>
+        </View>
+        <View style={{ padding: 8 }}>
+          <Button
+            icon={{ pack: 'AntDesign', name: 'close' }}
+            label="test"
+            type="outlined"
+            width="100%"
+            onPress={() => null}
+          />
+        </View>
       </View>
     </CrossProvider>
   );
@@ -28,8 +78,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
   box: {
     width: 60,

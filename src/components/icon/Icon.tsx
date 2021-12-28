@@ -1,10 +1,10 @@
 import React from 'react';
 import { styled, View } from 'dripsy';
-
 import getIcon from './getIcon';
-import type { Type as Button } from '../button';
 
+type Orientation = 'start' | 'end' | 'center';
 type IconPack = 'Feather' | 'AntDesign' | 'Ionicons' | 'MaterialIcons';
+export type Position = 'start' | 'end';
 export type Type = {
   pack: IconPack;
   name: string;
@@ -12,22 +12,34 @@ export type Type = {
 
 type Props = {
   icon: Type;
-  type: Button;
+  color: string;
+  orientation?: Orientation;
   onPress?: () => void;
 };
 
-const Icon = ({ icon, type, onPress }: Props) => {
-  const child = getIcon({
-    icon,
-    onPress,
-    filled: type === 'filled' || type === 'tonal',
-  });
+const Icon = ({ icon, color, orientation = 'center', onPress }: Props) => {
+  const child = getIcon({ icon, color, onPress });
 
-  return <Container>{!!child && child}</Container>;
+  return <Container orientation={orientation}>{!!child && child}</Container>;
 };
 
-const Container = styled(View)(() => ({
-  margin: '$4',
+type ContainerProps = { orientation: Orientation };
+const Container = styled(View)(({ orientation }: ContainerProps) => ({
+  marginY: '$2',
+  marginBottom: orientation === 'center' ? '$4' : '$0',
+  marginTop: orientation === 'center' ? '$4' : '$0',
+  marginRight: getMarginRight(orientation),
+  marginLeft: getMarginLeft(orientation),
 }));
+
+function getMarginRight(orientation: Orientation): string {
+  if (orientation === 'end' || orientation === 'center') return '$4';
+  return '$0';
+}
+
+function getMarginLeft(orientation: Orientation): string {
+  if (orientation === 'start' || orientation === 'center') return '$4';
+  return '$0';
+}
 
 export default Icon;
