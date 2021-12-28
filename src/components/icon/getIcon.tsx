@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import {
   AntDesign,
   Feather,
@@ -6,19 +6,26 @@ import {
   MaterialIcons,
 } from '@expo/vector-icons';
 import theme from '../../configs/theme';
+import type { Type as Icon } from './Icon';
 
 const filledColor = theme.colors.$onPrimary;
 const unfilledColor = theme.colors.$primary;
 const size = theme.space.$6;
 
-const getIcon = (
-  icon: IconType,
-  onPress?: () => void,
-  filled: boolean = false
-) => {
+type Props = {
+  icon: Icon;
+  onPress?: () => void;
+  filled: boolean;
+};
+
+export default function getIcon({
+  icon,
+  onPress,
+  filled = false,
+}: Props): ReactElement {
   const color = filled ? filledColor : unfilledColor;
 
-  if (icon.package === 'AntDesign') {
+  if (icon.pack === 'AntDesign') {
     return (
       <AntDesign
         name={icon.name as any}
@@ -28,7 +35,7 @@ const getIcon = (
       />
     );
   }
-  if (icon.package === 'Feather') {
+  if (icon.pack === 'Feather') {
     return (
       <Feather
         name={icon.name as any}
@@ -38,7 +45,7 @@ const getIcon = (
       />
     );
   }
-  if (icon.package === 'Ionicons') {
+  if (icon.pack === 'Ionicons') {
     return (
       <Ionicons
         name={icon.name as any}
@@ -48,7 +55,7 @@ const getIcon = (
       />
     );
   }
-  if (icon.package === 'MaterialIcons') {
+  if (icon.pack === 'MaterialIcons') {
     return (
       <MaterialIcons
         name={icon.name as any}
@@ -61,6 +68,4 @@ const getIcon = (
 
   // No matching case
   return <React.Fragment />;
-};
-
-export default getIcon;
+}

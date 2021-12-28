@@ -14,7 +14,12 @@ export default function App() {
     <CrossProvider>
       <View style={styles.container}>
         <Text>Result: {result}</Text>
-        <Button type="filled" onPress={() => null} />
+        <Button
+          icon={{ pack: 'Feather', name: 'x' }}
+          label="test"
+          type="filled"
+          onPress={() => null}
+        />
       </View>
     </CrossProvider>
   );
@@ -25,7 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'red',
   },
   box: {
     width: 60,

@@ -1,8 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
 import { Pressable as DripsyPressable, styled, Text } from 'dripsy';
 import { colord } from 'colord';
-import theme from '../../configs/theme';
 import Icon from '../icon';
+import type { Type as IconType } from '../icon';
+import theme from '../../configs/theme';
+
+export type Type =
+  | 'elevated'
+  | 'filled'
+  | 'tonal'
+  | 'outlined'
+  | 'text'
+  | 'icon';
 
 const borderWidth = 1.25;
 const borderRadius = theme.space?.$6;
@@ -19,14 +28,19 @@ const pressedUnfilledColor = colord(theme.colors.$primaryVariant)
   .alpha(0.25)
   .toHex();
 
+// new
+// const borderWidth = 1.25;
+// const borderRadius = [theme.space.$6, theme.space.$6, theme.space.$6];
+
 type Props = {
-  type?: ButtonType;
+  type?: Type;
   label?: string;
   icon?: IconType;
   width?: string | number;
   height?: string | number;
   onPress: () => void;
 };
+
 const Button = ({
   type = 'filled',
   label,
@@ -34,7 +48,7 @@ const Button = ({
   width,
   height,
   onPress,
-}: Props) => {
+}: Props): ReactElement<Props> => {
   const [pressed, setPressed] = useState<boolean>(false);
   const [hovered, setHovered] = useState<boolean>(false);
 
@@ -71,12 +85,13 @@ const Button = ({
 };
 
 type PressableProps = {
-  type: ButtonType;
+  type: Type;
   width?: string | number;
   height?: string | number;
   hovered: boolean;
   pressed: boolean;
 };
+
 const Pressable = styled(DripsyPressable)(
   ({ type, width, height, hovered, pressed }: PressableProps) => ({
     width,
@@ -98,8 +113,9 @@ const Pressable = styled(DripsyPressable)(
 );
 
 type LabelProps = {
-  type: ButtonType;
+  type: Type;
 };
+
 const Label = styled(Text)(({ type }: LabelProps) => ({
   color: getColor(type),
   marginY: '$3',
@@ -108,7 +124,7 @@ const Label = styled(Text)(({ type }: LabelProps) => ({
 }));
 
 const getBackgroundColor = (
-  type: ButtonType,
+  type: Type,
   hovered: boolean,
   pressed: boolean
 ): string => {
@@ -123,7 +139,7 @@ const getBackgroundColor = (
   return unfilledColor;
 };
 
-const getColor = (type: ButtonType) => {
+const getColor = (type: Type) => {
   if (type === 'filled') return filledColor;
   return unfilledColor;
 };

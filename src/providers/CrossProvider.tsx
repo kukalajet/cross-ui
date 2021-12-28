@@ -7,7 +7,6 @@ type CrossProviderProps = {
 };
 
 const CrossProvider = ({ children }: CrossProviderProps) => (
-  // <SafeAreaProvider>
   <DripsyProvider theme={theme}>
     {/* <BottomSheetModalProvider> */}
     {/* <PortalProvider> */}
@@ -15,7 +14,6 @@ const CrossProvider = ({ children }: CrossProviderProps) => (
     {/* </PortalProvider> */}
     {/* </BottomSheetModalProvider> */}
   </DripsyProvider>
-  // </SafeAreaProvider>
 );
 
 export default CrossProvider;
