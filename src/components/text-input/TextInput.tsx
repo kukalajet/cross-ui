@@ -183,7 +183,7 @@ const InputContainer = styled(View)(
     flexDirection: 'row',
     borderRadius: theme.space.$2,
     backgroundColor: theme.colors.$surface,
-    borderWidth: focused ? [1.5, '$1', '$1'] : 1,
+    borderWidth: focused ? [1.5, theme.space.$1, theme.space.$1] : 1,
     borderColor: getBorderColor(state, focused, hovered),
     shadowColor: theme.colors.$onSurface,
     shadowOffset: { width: theme.space.$0, height: theme.space.$1 },
