@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { multiply, CrossProvider, Button } from 'cross-ui';
+import { multiply, CrossProvider, Button, TextInput } from 'cross-ui';
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
@@ -13,7 +13,53 @@ export default function App() {
     <CrossProvider>
       <View style={styles.container}>
         <Text>Result: {result}</Text>
-        <View style={{ padding: 8 }}>
+        <View
+          style={{
+            paddingVertical: 8,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TextInput
+            label="Test"
+            initialValue="test"
+            width="25%"
+            multiline={true}
+          />
+          <TextInput
+            label="Test"
+            initialValue="test"
+            width="25%"
+            multiline={true}
+          />
+        </View>
+        <View style={{ paddingVertical: 8 }}>
+          <TextInput
+            label="Test"
+            initialValue="test"
+            width="50%"
+            leadingIcon={{ pack: 'Feather', name: 'x' }}
+            error="Conduct a conversion-focused copy teardown of your sales page."
+          />
+        </View>
+        <View style={{ paddingVertical: 8 }}>
+          <TextInput
+            label="Test"
+            initialValue="test"
+            width="100%"
+            trailingIcon={{ pack: 'Feather', name: 'x' }}
+            error="Conduct a conversion-focused copy teardown of your sales page."
+          />
+        </View>
+        <View style={{ paddingVertical: 8 }}>
+          <TextInput
+            label="Test"
+            initialValue="test"
+            width="25%"
+            multiline={true}
+          />
+        </View>
+        <View style={{ paddingVertical: 8 }}>
           <Button
             icon={{ pack: 'Feather', name: 'x' }}
             label="test"
@@ -21,7 +67,7 @@ export default function App() {
             onPress={() => null}
           />
         </View>
-        <View style={{ padding: 8 }}>
+        <View style={{ paddingVertical: 8 }}>
           <Button
             icon={{ pack: 'Feather', name: 'x' }}
             label="test"
@@ -29,7 +75,7 @@ export default function App() {
             onPress={() => null}
           />
         </View>
-        <View style={{ padding: 8 }}>
+        <View style={{ paddingVertical: 8 }}>
           <Button
             icon={{ pack: 'MaterialIcons', name: 'close' }}
             label="test"
@@ -37,7 +83,7 @@ export default function App() {
             onPress={() => null}
           />
         </View>
-        <View style={{ padding: 8 }}>
+        <View style={{ paddingVertical: 8 }}>
           <Button
             icon={{ pack: 'AntDesign', name: 'close' }}
             label="test"
@@ -45,7 +91,7 @@ export default function App() {
             onPress={() => null}
           />
         </View>
-        <View style={{ padding: 8, flexDirection: 'row' }}>
+        <View style={{ paddingVertical: 8, flexDirection: 'row' }}>
           <View style={{ paddingEnd: 8 }}>
             <Button
               icon={{ pack: 'AntDesign', name: 'close' }}
@@ -61,7 +107,7 @@ export default function App() {
             />
           </View>
         </View>
-        <View style={{ padding: 8 }}>
+        <View style={{ paddingVertical: 8 }}>
           <Button
             icon={{ pack: 'AntDesign', name: 'close' }}
             label="test"

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
-import { Pressable, styled, Text, View } from 'dripsy';
+import { H4, H5, Pressable, styled, View } from 'dripsy';
 import {
   NativeSyntheticEvent,
   Platform,
@@ -8,7 +8,9 @@ import {
   TextInputFocusEventData,
 } from 'react-native';
 import { colord } from 'colord';
+import type { Type as IconType } from '../icon';
 import theme from '../../configs';
+import Icon from '../icon';
 
 type State = 'default' | 'error' | 'disabled';
 
@@ -22,8 +24,8 @@ type TextInputProps = {
   disabled?: boolean;
   multiline?: boolean;
   pressable?: boolean;
-  leadingIcon?: React.ReactElement;
-  trailingIcon?: React.ReactElement;
+  leadingIcon?: IconType;
+  trailingIcon?: IconType;
   onChangeText?: (value: string) => void;
 };
 
@@ -36,7 +38,7 @@ const TextInput = ({
   width = '100%',
   disabled,
   multiline,
-  pressable,
+  pressable = true,
   leadingIcon,
   trailingIcon,
   onChangeText,
@@ -99,6 +101,7 @@ const TextInput = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {/* @ts-ignore: probably a bug in H4 types */}
       {!!label && <Label disabled={disabled}>{label}</Label>}
       <InputContainer
         state={state}
@@ -106,7 +109,17 @@ const TextInput = ({
         hovered={hovered}
         pointerEvents={pressable ? 'auto' : 'none'}
       >
-        {!!leadingIcon && <Icon>{leadingIcon}</Icon>}
+        {!!leadingIcon && (
+          <Icon
+            icon={leadingIcon}
+            color={getBorderColor(state, focused, hovered)}
+            minimumMargins
+            containerSx={{
+              marginRight: '$1',
+              marginLeft: '$2',
+            }}
+          />
+        )}
         <Input
           value={value}
           placeholder={placeholder}
@@ -121,8 +134,19 @@ const TextInput = ({
           hasTrailingIcon={!!trailingIcon}
           containerHeight={containerHeight}
         />
-        {!!trailingIcon && <Icon>{leadingIcon}</Icon>}
+        {!!trailingIcon && (
+          <Icon
+            icon={trailingIcon}
+            color={getBorderColor(state, focused, hovered)}
+            minimumMargins
+            containerSx={{
+              marginRight: '$2',
+              marginLeft: '$1',
+            }}
+          />
+        )}
       </InputContainer>
+      {/* @ts-ignore: probably a bug in H5 types */}
       {!!error && <Error>{error}</Error>}
     </Container>
   );
@@ -134,18 +158,18 @@ const Container = styled(Pressable)(({ width }: ContainerProps) => ({
   justifyContent: 'center',
 }));
 
-// H4
 type LabelProps = { disabled?: boolean };
-const Label = styled(Text)(({ disabled }: LabelProps) => ({
-  paddingBottom: '$2',
-  color: disabled ? theme.colors.$disable : undefined,
+const Label = styled(H4)(({ disabled }: LabelProps) => ({
+  paddingBottom: '$1',
+  color: disabled
+    ? theme.colors.$disable
+    : colord(theme.colors.$onSurface).alpha(0.9).toHex(),
 }));
 
-// H5
-const Error = styled(Text)(() => ({
+const Error = styled(H5)(() => ({
   fontSize: '$1',
-  paddingTop: ['$1', '$2', '$2'],
-  color: '$error',
+  paddingTop: '$1',
+  color: colord(theme.colors.$error).alpha(0.9).toHex(),
 }));
 
 type InputContainerProps = {
@@ -159,17 +183,15 @@ const InputContainer = styled(View)(
     flexDirection: 'row',
     borderRadius: theme.space.$2,
     backgroundColor: theme.colors.$surface,
+    borderWidth: focused ? [1.5, '$1', '$1'] : 1,
     borderColor: getBorderColor(state, focused, hovered),
-    borderWidth: [1, 1.5, 1.5],
     shadowColor: theme.colors.$onSurface,
     shadowOffset: { width: theme.space.$0, height: theme.space.$1 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.2,
     shadowRadius: theme.space.$1,
     elevation: theme.space.$1,
   })
 );
-
-const Icon = styled(View)(() => ({ padding: '$3' }));
 
 type InputProps = {
   containerHeight?: string | number;
@@ -185,12 +207,12 @@ const Input = styled(RNTextInput)(
     height: containerHeight,
     paddingTop: theme.space.$4,
     paddingBottom: theme.space.$4,
-    paddingStart: !!hasLeadingIcon
-      ? [theme.space.$3, theme.space.$3, theme.space.$4]
-      : [theme.space.$2, theme.space.$3, theme.space.$4],
+    paddingStart: hasLeadingIcon
+      ? theme.space.$1
+      : [theme.space.$3, theme.space.$3, theme.space.$4],
     paddingEnd: hasTrailingIcon
-      ? [theme.space.$3, theme.space.$3, theme.space.$4]
-      : [theme.space.$2, theme.space.$2, theme.space.$3],
+      ? theme.space.$1
+      : [theme.space.$3, theme.space.$3, theme.space.$4],
     ...Platform.select({
       web: { outlineWidth: theme.space.$0 },
     }),

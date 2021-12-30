@@ -1,5 +1,7 @@
 import React from 'react';
-import { styled, View } from 'dripsy';
+import { StyleSheet } from 'react-native';
+import { styled, useSx, View } from 'dripsy';
+import type { SxProp } from 'dripsy';
 import getIcon from './getIcon';
 
 type Orientation = 'start' | 'end' | 'center';
@@ -8,37 +10,90 @@ export type Position = 'start' | 'end';
 export type Type = {
   pack: IconPack;
   name: string;
+  size?: number;
 };
 
 type Props = {
   icon: Type;
   color: string;
   orientation?: Orientation;
+  minimumMargins?: boolean;
+  containerSx?: SxProp;
   onPress?: () => void;
 };
 
-const Icon = ({ icon, color, orientation = 'center', onPress }: Props) => {
+const Icon = ({
+  icon,
+  color,
+  orientation = 'center',
+  minimumMargins,
+  containerSx,
+  onPress,
+}: Props) => {
   const child = getIcon({ icon, color, onPress });
 
-  return <Container orientation={orientation}>{!!child && child}</Container>;
+  return (
+    <Container
+      orientation={orientation}
+      hasMinimumMargin={!!minimumMargins}
+      containerSx={containerSx}
+    >
+      {!!child && child}
+    </Container>
+  );
 };
 
-type ContainerProps = { orientation: Orientation };
-const Container = styled(View)(({ orientation }: ContainerProps) => ({
-  marginY: '$2',
-  marginBottom: orientation === 'center' ? '$4' : '$0',
-  marginTop: orientation === 'center' ? '$4' : '$0',
-  marginRight: getMarginRight(orientation),
-  marginLeft: getMarginLeft(orientation),
-}));
+type ContainerProps = {
+  orientation: Orientation;
+  hasMinimumMargin?: boolean;
+  containerSx?: SxProp;
+};
+const Container = styled(View)(
+  ({ orientation, hasMinimumMargin, containerSx }: ContainerProps) => {
+    const sx = useSx();
 
-function getMarginRight(orientation: Orientation): string {
-  if (orientation === 'end' || orientation === 'center') return '$4';
+    return StyleSheet.flatten([
+      {
+        justifyContent: 'center',
+        marginVertical: getMarginVertical(orientation, hasMinimumMargin),
+        marginRight: getMarginRight(orientation),
+        marginLeft: getMarginLeft(orientation),
+      },
+      !!containerSx && sx(containerSx),
+    ]);
+  }
+);
+
+function getMarginVertical(
+  orientation: Orientation,
+  hasMinimumMargin?: boolean
+): string {
+  if (hasMinimumMargin) return '$0';
+  if (orientation === 'center') return '$4';
+  return '$2';
+}
+
+function getMarginRight(
+  orientation: Orientation,
+  hasMinimumMargin?: boolean
+): string | string[] {
+  if (hasMinimumMargin) return '$0';
+  if (orientation === 'end' || orientation === 'center') {
+    return ['$4', '$3', '$3'];
+  }
+
   return '$0';
 }
 
-function getMarginLeft(orientation: Orientation): string {
-  if (orientation === 'start' || orientation === 'center') return '$4';
+function getMarginLeft(
+  orientation: Orientation,
+  hasMinimumMargin?: boolean
+): string | string[] {
+  if (hasMinimumMargin) return '$0';
+  if (orientation === 'start' || orientation === 'center') {
+    return ['$4', '$3', '$3'];
+  }
+
   return '$0';
 }
 
