@@ -8,20 +8,26 @@ import {
 import theme from '../../configs/theme';
 import type { Type as Icon } from './Icon';
 
-const size = theme.space.$6;
+const defaultSize = theme.space.$6;
 
 type Props = {
   icon: Icon;
+  size?: number;
+  color?: string;
   onPress?: () => void;
-  color: string;
 };
 
-export default function getIcon({ icon, color, onPress }: Props): ReactElement {
+export default function getIcon({
+  icon,
+  size,
+  color,
+  onPress,
+}: Props): ReactElement {
   if (icon.pack === 'AntDesign') {
     return (
       <AntDesign
         name={icon.name as any}
-        size={size}
+        size={size || defaultSize}
         onPress={onPress}
         color={color}
       />
@@ -31,7 +37,7 @@ export default function getIcon({ icon, color, onPress }: Props): ReactElement {
     return (
       <Feather
         name={icon.name as any}
-        size={size}
+        size={size || defaultSize}
         onPress={onPress}
         color={color}
       />
@@ -41,7 +47,7 @@ export default function getIcon({ icon, color, onPress }: Props): ReactElement {
     return (
       <Ionicons
         name={icon.name as any}
-        size={size}
+        size={size || defaultSize}
         onPress={onPress}
         color={color}
       />
@@ -51,7 +57,7 @@ export default function getIcon({ icon, color, onPress }: Props): ReactElement {
     return (
       <MaterialIcons
         name={icon.name as any}
-        size={size}
+        size={size || defaultSize}
         onPress={onPress}
         color={color}
       />

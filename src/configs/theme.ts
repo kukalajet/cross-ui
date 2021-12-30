@@ -44,10 +44,13 @@ const text = {
   h1: {
     fontSize: '$2',
   },
-  h2: {},
-  h3: {
+  h2: {
     marginY: '$4',
-    fontSize: ['$4', '$5', '$5'],
+    fontSize: ['$4', '$4', '$5'],
+  },
+  h3: {
+    marginY: '$3',
+    fontSize: ['$3', '$3', '$4'],
   },
   h4: {
     marginY: '$0',
@@ -78,6 +81,7 @@ const theme = makeTheme({
 
 type MyTheme = typeof theme;
 declare module 'dripsy' {
+  // @ts-expect-error: Don't have time to inspect why it bothers when editing `h2`.
   interface DripsyCustomTheme extends MyTheme {}
 }
 

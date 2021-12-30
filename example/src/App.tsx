@@ -38,7 +38,8 @@ export default function App() {
             label="Test"
             initialValue="test"
             width="50%"
-            leadingIcon={{ pack: 'Feather', name: 'x' }}
+            leadingIcon={{ pack: 'Feather', name: 'x', size: 28 }}
+            trailingIcon={{ pack: 'Feather', name: 'x' }}
             error="Conduct a conversion-focused copy teardown of your sales page."
           />
         </View>
@@ -110,9 +111,17 @@ export default function App() {
         <View style={{ paddingVertical: 8 }}>
           <Button
             icon={{ pack: 'AntDesign', name: 'close' }}
-            label="test"
+            label="BIG BUTTON"
             type="outlined"
             width="100%"
+            onPress={() => null}
+          />
+        </View>
+        <View style={{ paddingVertical: 8 }}>
+          <Button
+            label="BUTTON"
+            type="tonal"
+            width="75%"
             onPress={() => null}
           />
         </View>

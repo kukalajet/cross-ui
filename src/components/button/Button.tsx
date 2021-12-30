@@ -1,5 +1,5 @@
 import React, { ReactElement, useCallback, useState } from 'react';
-import { Pressable as DripsyPressable, styled, Text } from 'dripsy';
+import { H3, Pressable as DripsyPressable, styled } from 'dripsy';
 import { colord } from 'colord';
 import Icon from '../icon';
 import type { Type as IconType, Position as IconPosition } from '../icon';
@@ -65,10 +65,19 @@ const Button = ({
           icon={icon}
           color={textColor || getTextColor(type)}
           orientation={!!label ? 'start' : 'center'}
+          containerSx={{
+            marginRight: !!label ? ['$1', '$2', '$2'] : ['$4', '$5', '$5'],
+          }}
         />
       )}
       {!!label && (
-        <Label type={type} textColor={textColor}>
+        /* @ts-ignore: probably a bug in H5 types */
+        <Label
+          type={type}
+          textColor={textColor}
+          iconPosition={iconPosition}
+          hasLabel={!!label}
+        >
           {label}
         </Label>
       )}
@@ -76,7 +85,8 @@ const Button = ({
         <Icon
           icon={icon}
           color={textColor || getTextColor(type)}
-          orientation="end"
+          orientation={!!label ? 'end' : 'center'}
+          containerSx={{ marginLeft: ['$4', '$5', '$5'] }}
         />
       )}
     </Pressable>
@@ -122,13 +132,24 @@ const Pressable = styled(DripsyPressable)(
 type LabelProps = {
   type: Type;
   textColor?: string;
+  iconPosition: IconPosition;
+  hasLabel: boolean;
 };
-const Label = styled(Text)(({ type, textColor }: LabelProps) => ({
-  color: textColor || getTextColor(type),
-  marginY: '$3',
-  marginX: ['$4', '$5', '$5'],
-  fontSize: '$4',
-}));
+const Label = styled(H3)(
+  ({ type, textColor, iconPosition, hasLabel }: LabelProps) => ({
+    color: textColor || getTextColor(type),
+    marginY: '$3',
+    marginRight:
+      iconPosition === 'end' && hasLabel
+        ? ['$2', '$1', '$1']
+        : ['$4', '$5', '$5'],
+    marginLeft:
+      iconPosition === 'start' && hasLabel
+        ? ['$2', '$1', '$1']
+        : ['$4', '$5', '$5'],
+    fontSize: '$4',
+  })
+);
 
 /**
  *

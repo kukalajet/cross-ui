@@ -10,12 +10,12 @@ export type Position = 'start' | 'end';
 export type Type = {
   pack: IconPack;
   name: string;
-  size?: number;
 };
 
 type Props = {
   icon: Type;
   color: string;
+  size?: number;
   orientation?: Orientation;
   minimumMargins?: boolean;
   containerSx?: SxProp;
@@ -25,12 +25,13 @@ type Props = {
 const Icon = ({
   icon,
   color,
+  size,
   orientation = 'center',
   minimumMargins,
   containerSx,
   onPress,
 }: Props) => {
-  const child = getIcon({ icon, color, onPress });
+  const child = getIcon({ icon, size, color, onPress });
 
   return (
     <Container
@@ -67,9 +68,9 @@ const Container = styled(View)(
 function getMarginVertical(
   orientation: Orientation,
   hasMinimumMargin?: boolean
-): string {
+): string | string[] {
   if (hasMinimumMargin) return '$0';
-  if (orientation === 'center') return '$4';
+  if (orientation === 'center') return ['$4', '$5', '$5'];
   return '$2';
 }
 
@@ -79,7 +80,7 @@ function getMarginRight(
 ): string | string[] {
   if (hasMinimumMargin) return '$0';
   if (orientation === 'end' || orientation === 'center') {
-    return ['$4', '$3', '$3'];
+    return ['$4', '$5', '$5'];
   }
 
   return '$0';
@@ -91,7 +92,7 @@ function getMarginLeft(
 ): string | string[] {
   if (hasMinimumMargin) return '$0';
   if (orientation === 'start' || orientation === 'center') {
-    return ['$4', '$3', '$3'];
+    return ['$4', '$5', '$5'];
   }
 
   return '$0';
