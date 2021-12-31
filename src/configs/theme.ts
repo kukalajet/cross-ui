@@ -81,7 +81,6 @@ const theme = makeTheme({
 
 type MyTheme = typeof theme;
 declare module 'dripsy' {
-  // @ts-expect-error: Don't have time to inspect why it bothers when editing `h2`.
   interface DripsyCustomTheme extends MyTheme {}
 }
 
