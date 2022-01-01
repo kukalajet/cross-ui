@@ -71,6 +71,7 @@ const Modal = ({
               orientation="center"
               color={theme.colors.$onSurface}
               onPress={handleOnDismiss}
+              containerSx={{ marginRight: '$0' }}
             />
           )}
           {/* @ts-ignore: probably a bug in H4 types */}

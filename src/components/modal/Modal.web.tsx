@@ -42,6 +42,7 @@ const Modal = ({
                       orientation="center"
                       color={theme.colors.$onSurface}
                       onPress={handleOnDismiss}
+                      containerSx={{ marginRight: '$0' }}
                     />
                   )}
                 </Header>
@@ -78,7 +79,7 @@ const Container = styled(Pressable)(({ size }: ContainerProps) => ({
   width: getWidth(size),
   height: getHeight(size),
   backgroundColor: '$surface',
-  borderRadius: '$5',
+  borderRadius: theme.space.$5,
 }));
 
 const Header = styled(View)(() => ({

@@ -76,7 +76,7 @@ const Button = ({
           type={type}
           textColor={textColor}
           iconPosition={iconPosition}
-          hasLabel={!!label}
+          hasIcon={!!icon}
         >
           {label}
         </Label>
@@ -133,18 +133,18 @@ type LabelProps = {
   type: Type;
   textColor?: string;
   iconPosition: IconPosition;
-  hasLabel: boolean;
+  hasIcon: boolean;
 };
 const Label = styled(H3)(
-  ({ type, textColor, iconPosition, hasLabel }: LabelProps) => ({
+  ({ type, textColor, iconPosition, hasIcon }: LabelProps) => ({
     color: textColor || getTextColor(type),
     marginY: '$3',
     marginRight:
-      iconPosition === 'end' && hasLabel
+      iconPosition === 'end' && hasIcon
         ? ['$2', '$1', '$1']
         : ['$4', '$5', '$5'],
     marginLeft:
-      iconPosition === 'start' && hasLabel
+      iconPosition === 'start' && hasIcon
         ? ['$2', '$1', '$1']
         : ['$4', '$5', '$5'],
     fontSize: '$4',
