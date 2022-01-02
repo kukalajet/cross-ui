@@ -1,4 +1,4 @@
-export { Icon, Button, TextInput, Modal } from './components';
+export { Icon, Button, TextInput, Modal, Select } from './components';
 export { CrossProvider } from './providers';
 
 export function multiply(a: number, b: number): Promise<number> {
