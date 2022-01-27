@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import {
   multiply,
   CrossProvider,
@@ -14,73 +14,30 @@ export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
 
-  const [showModal, setShowModal] = React.useState(false);
-  const [config, setConfig] = React.useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
-  const bottomButtonRef = React.useRef<TouchableOpacity>(null);
-
   React.useEffect(() => {
     multiply(3, 7).then(setResult);
-  }, []);
-
-  const handleMountBottomPopoverPress = React.useCallback(() => {
-    bottomButtonRef.current?.measureInWindow((x, y, width, height) => {
-      setConfig({
-        x,
-        y,
-        width,
-        height,
-      });
-      setShowModal((state) => !state);
-    });
-  }, []);
-
-  const handleDismissPopoverPress = React.useCallback(() => {
-    setShowModal(false);
   }, []);
 
   return (
     <SafeAreaProvider>
       <CrossProvider>
-        {/* <TouchableOpacity
-          ref={bottomButtonRef}
-          onPress={handleMountBottomPopoverPress}
-          style={{
-            paddingHorizontal: 24,
-            paddingVertical: 12,
-            marginVertical: 6,
-            borderRadius: 24,
-            backgroundColor: '#333',
-          }}
-        >
-          <Text>Top Popover</Text>
-        </TouchableOpacity>
-        {!!showModal && (
-          <Select targetLayout={config} onPress={handleDismissPopoverPress} />
-        )} */}
-
         <View style={styles.container}>
-          <TouchableOpacity
-            ref={bottomButtonRef}
-            onPress={handleMountBottomPopoverPress}
-            style={{
-              paddingHorizontal: 24,
-              paddingVertical: 12,
-              marginVertical: 6,
-              borderRadius: 24,
-              backgroundColor: '#333',
-            }}
-          >
-            <Text>Top Popover</Text>
-          </TouchableOpacity>
-          {!!showModal && (
-            <Select targetLayout={config} onPress={handleDismissPopoverPress} />
-          )}
-          <View style={{ paddingVertical: 8 }}>
+          {/* <Select
+            data={[]}
+            exhibitor={(ref, selected) => <Text ref={ref}>TEST</Text>}
+            renderItem={() => <Text>TEST</Text>}
+          /> */}
+          <Select
+            data={[] as never[]}
+            renderItem={({ item, index }) => <Text>item</Text>}
+            renderExhibitor={(ref, selected, handleMountPress) => (
+              // @ts-ignore
+              <TouchableHighlight ref={ref} onPress={handleMountPress}>
+                <Text>TEST</Text>
+              </TouchableHighlight>
+            )}
+          />
+          {/* <View style={{ paddingVertical: 8 }}>
             <Button
               label="OK"
               type="tonal"
@@ -250,7 +207,7 @@ export default function App() {
               width="75%"
               onPress={() => null}
             />
-          </View>
+          </View> */}
         </View>
       </CrossProvider>
     </SafeAreaProvider>
@@ -262,7 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     paddingHorizontal: 20,
-    backgroundColor: '#ffebee',
+    backgroundColor: '#F9E9F9',
   },
   box: {
     width: 60,
