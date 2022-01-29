@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native';
 import {
   multiply,
   CrossProvider,
@@ -7,8 +13,11 @@ import {
   TextInput,
   Modal,
   Select,
+  Popover,
 } from 'cross-ui';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+type Test = { color: string };
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
@@ -22,13 +31,29 @@ export default function App() {
     <SafeAreaProvider>
       <CrossProvider>
         <View style={styles.container}>
-          {/* <Select
-            data={[]}
-            exhibitor={(ref, selected) => <Text ref={ref}>TEST</Text>}
-            renderItem={() => <Text>TEST</Text>}
-          /> */}
-          <Select
-            data={[] as never[]}
+          <Popover<TouchableHighlight>
+            renderExhibitor={(ref, handleMountPress) => (
+              <TouchableHighlight
+                ref={ref}
+                onPress={() => {
+                  console.log('onPress');
+                  handleMountPress();
+                }}
+              >
+                <Text>JETON</Text>
+              </TouchableHighlight>
+            )}
+            renderChildren={() => (
+              <View>
+                <Text>JETON</Text>
+              </View>
+            )}
+          />
+          {/* <Select<Test, View>
+            data={[
+              { id: '1', value: '2', color: 'test' },
+              { id: '2', value: '3', color: 'test' },
+            ]}
             renderItem={({ item, index }) => <Text>item</Text>}
             renderExhibitor={(ref, selected, handleMountPress) => (
               // @ts-ignore
@@ -36,8 +61,8 @@ export default function App() {
                 <Text>TEST</Text>
               </TouchableHighlight>
             )}
-          />
-          {/* <View style={{ paddingVertical: 8 }}>
+          /> */}
+          <View style={{ paddingVertical: 8 }}>
             <Button
               label="OK"
               type="tonal"
@@ -207,7 +232,7 @@ export default function App() {
               width="75%"
               onPress={() => null}
             />
-          </View> */}
+          </View>
         </View>
       </CrossProvider>
     </SafeAreaProvider>
