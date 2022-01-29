@@ -21,14 +21,14 @@ type Props<T> = {
     ref: RefObject<T>,
     handleMountPress: () => void
   ) => ReactElement;
-  renderChildren: () => ReactElement;
+  children: ReactElement;
   backdropOpacity?: number;
   backdropBackgroundColor?: string;
 };
 
 const Popover = <T extends ReactNativeView>({
   renderExhibitor,
-  renderChildren,
+  children,
   backdropOpacity,
   backdropBackgroundColor,
 }: Props<T>) => {
@@ -57,11 +57,6 @@ const Popover = <T extends ReactNativeView>({
     return element;
   }, []);
 
-  const Children = useMemo(() => {
-    const element = renderChildren();
-    return element;
-  }, []);
-
   return (
     <Container>
       {Exhibitor}
@@ -73,7 +68,7 @@ const Popover = <T extends ReactNativeView>({
             backdropOpacity={backdropOpacity}
             backdropBackgroundColor={backdropBackgroundColor}
           >
-            {Children}
+            {children}
           </ChildrenContainer>
         </Portal>
       )}
