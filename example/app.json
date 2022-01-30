@@ -9,8 +9,27 @@
     "version": "1.0.0",
     "platforms": ["ios", "android", "web"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hapseer.crossui"
     },
-    "assetBundlePatterns": ["**/*"]
+    "assetBundlePatterns": ["**/*"],
+    "android": {
+      "package": "com.hapseer.crossui"
+    },
+    "plugins": [
+      [
+        "expo-community-flipper",
+        {
+          "Flipper": "0.123.0",
+          "ios": {
+            "Flipper-Folly": "2.6.10",
+            "Flipper-RSocket": "1.4.3",
+            "Flipper-DoubleConversion": "3.1.7",
+            "Flipper-Glog": "0.3.9",
+            "Flipper-PeerTalk": "0.0.4"
+          }
+        }
+      ]
+    ]
   }
 }
