@@ -28,9 +28,7 @@ const Modal = ({
     <React.Fragment>
       {open && (
         <Portal>
-          {/* @ts-expect-error: Wrong Pressable typing. */}
           <Backdrop onPress={handleOnRemove}>
-            {/* @ts-expect-error: Wrong Pressable typing. */}
             <Container size={size}>
               {(!!onRemove || !!label) && (
                 <Header>

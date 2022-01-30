@@ -125,13 +125,11 @@ const ChildrenContainer = ({
   );
 
   return (
-    // @ts-expect-error: Wrong Pressable types
     <BottomContainer onPress={onPress}>
       <BackdropContainer
         backgroundColor={backdropBackgroundColor || theme.colors.$onSurface}
         opacity={backdropOpacity || 0.1}
       >
-        {/* @ts-expect-error: Wrong Pressable types */}
         <PopoverContainer onLayout={handleOnLayout} containerSx={position}>
           {children}
         </PopoverContainer>

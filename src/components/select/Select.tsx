@@ -70,7 +70,6 @@ const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
   const handleOnPress = useCallback(() => onPress(item), [item, onPress]);
 
   return (
-    // @ts-expect-error: Wrong Pressable typing.
     <ListItemContainer onPress={handleOnPress}>
       {/* @ts-ignore: probably a bug in H5 types */}
       <Value>{item.value}</Value>
