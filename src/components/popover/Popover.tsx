@@ -161,7 +161,6 @@ const PopoverContainer = styled(Pressable)(
     const containerStyle = {
       position: 'absolute',
       alignSelf: 'center',
-      padding: '$4',
       backgroundColor: '$surface',
       shadowColor: '$onSurface',
       shadowOpacity: 0.2,

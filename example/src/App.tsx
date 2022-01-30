@@ -31,37 +31,37 @@ export default function App() {
     <SafeAreaProvider>
       <CrossProvider>
         <View style={styles.container}>
-          <Popover<TouchableHighlight>
-            renderExhibitor={(ref, handleMountPress) => (
-              <TouchableHighlight
-                ref={ref}
-                onPress={() => {
-                  console.log('onPress');
-                  handleMountPress();
-                }}
-              >
-                <Text>JETON</Text>
-              </TouchableHighlight>
-            )}
-            renderChildren={() => (
-              <View>
-                <Text>JETON</Text>
-              </View>
-            )}
-          />
-          {/* <Select<Test, View>
+          <Select<{ id: string; value: string; color: string }, { id: string }>
             data={[
-              { id: '1', value: '2', color: 'test' },
-              { id: '2', value: '3', color: 'test' },
+              { id: '1', value: '1', color: 'color1' },
+              { id: '2', value: '3', color: 'color2' },
+              { id: '3', value: '3', color: 'color3' },
+              { id: '4', value: '4', color: 'color4' },
+              { id: '5', value: '5', color: 'color5' },
+              { id: '6', value: '6', color: 'color6' },
+              { id: '7', value: '7', color: 'color7' },
+              { id: '8', value: '8', color: 'color8' },
+              { id: '9', value: '9', color: 'color9' },
+              { id: '10', value: '10', color: 'color10' },
+              { id: '11', value: '11', color: 'color11' },
+              { id: '12', value: '12', color: 'color12' },
+              { id: '13', value: '13', color: 'color13' },
+              { id: '14', value: '14', color: 'color14' },
+              { id: '15', value: '15', color: 'color15' },
+              { id: '16', value: '16', color: 'color16' },
+              { id: '17', value: '17', color: 'color17' },
+              { id: '18', value: '18', color: 'color18' },
+              { id: '19', value: '19', color: 'color19' },
             ]}
-            renderItem={({ item, index }) => <Text>item</Text>}
+            renderItem={({ item, index }) => <Text>{item.color}</Text>}
             renderExhibitor={(ref, selected, handleMountPress) => (
               // @ts-ignore
               <TouchableHighlight ref={ref} onPress={handleMountPress}>
                 <Text>TEST</Text>
               </TouchableHighlight>
             )}
-          /> */}
+            contentContainerStyle={{ paddingX: '$5', paddingY: '$3' }}
+          />
           <View style={{ paddingVertical: 8 }}>
             <Button
               label="OK"
