@@ -1,7 +1,8 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import { SxProp, useSx } from 'dripsy';
+import { useSx } from 'dripsy';
 import type { ListRenderItem } from 'react-native';
+import type { SxProp } from 'dripsy';
 
 type Props<T> = {
   data: (T & Item)[];

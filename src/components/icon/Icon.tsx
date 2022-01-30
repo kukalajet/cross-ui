@@ -22,6 +22,7 @@ type Props = {
   onPress?: () => void;
 };
 
+// TODO: Generalize margins for other applications. @Jeton
 const Icon = ({
   icon,
   color,
