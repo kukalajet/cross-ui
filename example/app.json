@@ -2,6 +2,7 @@
   "name": "cross-ui-example",
   "displayName": "CrossUi Example",
   "expo": {
+    "jsEngine": "hermes",
     "name": "cross-ui-example",
     "slug": "cross-ui-example",
     "description": "Example app for cross-ui",
