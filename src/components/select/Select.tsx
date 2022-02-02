@@ -77,6 +77,7 @@ const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
         <Icon
           icon={{ pack: 'Feather', name: 'check' }}
           color={theme.colors.$onSurface}
+          containerSx={{ paddingY: '$2', paddingX: '$4' }}
         />
       )}
     </ListItemContainer>
@@ -87,12 +88,11 @@ const ListItemContainer = styled(Pressable)(() => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
-  paddingX: '$3',
-  paddingY: '$4',
 }));
 
 const Value = styled(H4)(() => ({
-  marginX: '$3',
+  paddingX: '$4',
+  paddingY: '$3',
   fontSize: '$2',
   color: '$onSurface',
 }));
