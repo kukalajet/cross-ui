@@ -22,17 +22,25 @@ const Select = <T, S extends ReactNativeView>({
 }: Props<T, S>) => {
   const [selected, setSelected] = useState<Data<T>[]>([]);
 
-  const onListItemPress = useCallback(
-    (item: Data<T>) => {
-      const newSelected = [...selected, item];
+  const onListItemAdd = useCallback(
+    (data: Data<T>) => {
+      const newSelected = [...selected, data];
+      setSelected(newSelected);
+    },
+    [selected]
+  );
+
+  const onListItemRemove = useCallback(
+    (data: Data<T>) => {
+      const newSelected = selected.filter((item) => item.id !== data.id);
       setSelected(newSelected);
     },
     [selected]
   );
 
   const isSelected = useCallback(
-    (item: Data<T>) => {
-      const value = selected.some((element) => element.id === item.id);
+    (data: Data<T>) => {
+      const value = selected.some((item) => item.id === data.id);
       return value;
     },
     [selected]
@@ -41,11 +49,16 @@ const Select = <T, S extends ReactNativeView>({
   const renderItem: ListRenderItem<Data<T>> = ({ item }) => {
     const selected = isSelected(item);
 
+    const handleOnPress = (item: Data<T>) => {
+      if (!selected) onListItemAdd(item);
+      if (selected) onListItemRemove(item);
+    };
+
     return (
       <ListItem<Data<T>>
         item={item}
         selected={selected}
-        onPress={onListItemPress}
+        onPress={handleOnPress}
       />
     );
   };
