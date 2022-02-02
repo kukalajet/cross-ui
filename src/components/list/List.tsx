@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList } from 'react-native';
 import { useSx } from 'dripsy';
+import Divider from '../divider';
 import type { ListRenderItem } from 'react-native';
 import type { SxProp } from 'dripsy';
 
@@ -25,6 +26,7 @@ const List = <T extends Item>({
     <FlatList<T>
       data={data}
       renderItem={renderItem}
+      ItemSeparatorComponent={() => <Divider />}
       bounces={bounces}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       keyExtractor={(item, _) => item.id}
