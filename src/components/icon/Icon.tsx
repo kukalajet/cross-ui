@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { styled, useSx, View } from 'dripsy';
-import type { SxProp } from 'dripsy';
 import getIcon from './getIcon';
+import type { SxProp } from 'dripsy';
 
 type Orientation = 'start' | 'end' | 'center';
 type IconPack = 'Feather' | 'AntDesign' | 'Ionicons' | 'MaterialIcons';
@@ -27,7 +27,7 @@ const Icon = ({
   icon,
   color,
   size,
-  orientation = 'center',
+  orientation,
   minimumMargins,
   containerSx,
   onPress,
@@ -46,7 +46,7 @@ const Icon = ({
 };
 
 type ContainerProps = {
-  orientation: Orientation;
+  orientation?: Orientation;
   hasMinimumMargin?: boolean;
   containerSx?: SxProp;
 };
@@ -67,36 +67,34 @@ const Container = styled(View)(
 );
 
 function getMarginVertical(
-  orientation: Orientation,
+  orientation?: Orientation,
   hasMinimumMargin?: boolean
-): string | string[] {
+): string | string[] | undefined {
   if (hasMinimumMargin) return '$0';
   if (orientation === 'center') return ['$4', '$5', '$5'];
-  return '$2';
+  return undefined;
 }
 
 function getMarginRight(
-  orientation: Orientation,
+  orientation?: Orientation,
   hasMinimumMargin?: boolean
-): string | string[] {
+): string | string[] | undefined {
   if (hasMinimumMargin) return '$0';
   if (orientation === 'end' || orientation === 'center') {
     return ['$4', '$5', '$5'];
   }
-
-  return '$0';
+  return undefined;
 }
 
 function getMarginLeft(
-  orientation: Orientation,
+  orientation?: Orientation,
   hasMinimumMargin?: boolean
-): string | string[] {
+): string | string[] | undefined {
   if (hasMinimumMargin) return '$0';
   if (orientation === 'start' || orientation === 'center') {
     return ['$4', '$5', '$5'];
   }
-
-  return '$0';
+  return undefined;
 }
 
 export default Icon;

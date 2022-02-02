@@ -77,7 +77,6 @@ const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
         <Icon
           icon={{ pack: 'Feather', name: 'check' }}
           color={theme.colors.$onSurface}
-          containerSx={{ marginY: '$0', marginRight: 0, marginLeft: 0 }}
         />
       )}
     </ListItemContainer>
