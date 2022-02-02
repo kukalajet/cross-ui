@@ -5,6 +5,7 @@ import {
   Text,
   TouchableHighlight,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import {
   multiply,
@@ -56,15 +57,15 @@ export default function App() {
             // renderItem={({ item, index }) => <Text>{item.color}</Text>}
             renderExhibitor={(ref, handleMountPress) => (
               // @ts-ignore
-              <TouchableHighlight
+              <Pressable
                 ref={ref}
                 onPress={handleMountPress}
-                style={{ padding: 50 }}
+                style={{ padding: 20, backgroundColor: 'yellow' }}
               >
                 <Text>TESTING APP</Text>
-              </TouchableHighlight>
+              </Pressable>
             )}
-            contentContainerStyle={{ paddingX: '$2', paddingY: '$2' }}
+            // contentContainerStyle={{ flex: 1, paddingX: '$2', paddingY: '$2' }}
           />
           <View style={{ paddingVertical: 8 }}>
             <Button
