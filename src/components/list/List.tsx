@@ -7,12 +7,16 @@ import type { SxProp } from 'dripsy';
 type Props<T> = {
   data: (T & Item)[];
   renderItem: ListRenderItem<T & Item>;
+  bounces?: boolean;
+  showsVerticalScrollIndicator?: boolean;
   contentContainerStyle?: SxProp;
 };
 
 const List = <T extends Item>({
   data,
   renderItem,
+  bounces = false,
+  showsVerticalScrollIndicator = false,
   contentContainerStyle,
 }: Props<T & Item>) => {
   const sx = useSx();
@@ -21,6 +25,8 @@ const List = <T extends Item>({
     <FlatList<T>
       data={data}
       renderItem={renderItem}
+      bounces={bounces}
+      showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       keyExtractor={(item, _) => item.id}
       contentContainerStyle={
         !!contentContainerStyle && sx(contentContainerStyle)

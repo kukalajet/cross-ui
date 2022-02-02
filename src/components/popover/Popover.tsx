@@ -95,17 +95,22 @@ const ChildrenContainer = ({
   onPress,
   targetLayout,
   backdropBackgroundColor,
-  backdropOpacity,
 }: ChildrenProps) => {
   const [layout, setLayout] = useState<Layout>({ width: 0, height: 0 });
   const position = useMemo<Position>(
     () => ({
       opacity: layout.height === 0 || layout.width === 0 ? 0 : 1,
-      top: targetLayout.y + targetLayout.height + 8,
+      top: targetLayout.y + targetLayout.height + 4,
       left: targetLayout.x + targetLayout.width / 2 - layout.width / 2,
     }),
     [layout, targetLayout]
   );
+  const containerStyle = useMemo(() => {
+    const widthContainerStyle = { width: targetLayout.width };
+    const styles = [position, widthContainerStyle];
+    const flatten = StyleSheet.flatten(styles);
+    return flatten;
+  }, [position, targetLayout]);
 
   const handleOnLayout = useCallback(
     ({
@@ -128,9 +133,11 @@ const ChildrenContainer = ({
     <BottomContainer onPress={onPress}>
       <BackdropContainer
         backgroundColor={backdropBackgroundColor || theme.colors.$onSurface}
-        opacity={backdropOpacity || 0.1}
       >
-        <PopoverContainer onLayout={handleOnLayout} containerSx={position}>
+        <PopoverContainer
+          onLayout={handleOnLayout}
+          containerSx={containerStyle}
+        >
           {children}
         </PopoverContainer>
       </BackdropContainer>
@@ -142,13 +149,11 @@ const BottomContainer = styled(Pressable)(() => ({
   ...StyleSheet.absoluteFillObject,
 }));
 
-type BackdropContainerProps = { backgroundColor: string; opacity?: number };
+type BackdropContainerProps = { backgroundColor: string };
 const BackdropContainer = styled(View)(
-  ({ backgroundColor, opacity }: BackdropContainerProps) => ({
+  ({ backgroundColor }: BackdropContainerProps) => ({
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colord(backgroundColor)
-      .alpha(opacity || 0.2)
-      .toHex(),
+    backgroundColor: colord(backgroundColor).alpha(0.1).toHex(),
   })
 );
 
@@ -157,6 +162,7 @@ const PopoverContainer = styled(Pressable)(
   ({ containerSx }: PopoverContainerProps) => {
     const sx = useSx();
     const containerStyle = {
+      height: '35%',
       position: 'absolute',
       alignSelf: 'center',
       backgroundColor: '$surface',

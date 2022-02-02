@@ -77,7 +77,7 @@ const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
         <Icon
           icon={{ pack: 'Feather', name: 'check' }}
           color={theme.colors.$onSurface}
-          containerSx={{ marginY: '$1', marginRight: 0, marginLeft: 0 }}
+          containerSx={{ marginY: '$0', marginRight: 0, marginLeft: 0 }}
         />
       )}
     </ListItemContainer>
@@ -88,7 +88,7 @@ const ListItemContainer = styled(Pressable)(() => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
-  paddingX: '$1',
+  paddingX: '$3',
   paddingY: '$4',
 }));
 
