@@ -10,6 +10,7 @@ type Props<T> = {
   renderItem: ListRenderItem<T & Item>;
   bounces?: boolean;
   showsVerticalScrollIndicator?: boolean;
+  withDivider?: boolean;
   contentContainerStyle?: SxProp;
 };
 
@@ -18,6 +19,7 @@ const List = <T extends Item>({
   renderItem,
   bounces = false,
   showsVerticalScrollIndicator = false,
+  withDivider,
   contentContainerStyle,
 }: Props<T & Item>) => {
   const sx = useSx();
@@ -26,7 +28,7 @@ const List = <T extends Item>({
     <FlatList<T>
       data={data}
       renderItem={renderItem}
-      ItemSeparatorComponent={() => <Divider />}
+      ItemSeparatorComponent={withDivider ? () => <Divider /> : null}
       bounces={bounces}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       keyExtractor={(item, _) => item.id}

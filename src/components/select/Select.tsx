@@ -1,11 +1,16 @@
-import React, { useCallback, useState } from 'react';
-import { styled, H4, Pressable } from 'dripsy';
+import React, { useCallback, useMemo, useState } from 'react';
+import { styled, H4, Pressable, useSx } from 'dripsy';
+import { colord } from 'colord';
 import Popover from '../popover';
 import List from '../list';
 import Icon from '../icon';
 import theme from '../../configs';
 import type { ReactElement, RefObject } from 'react';
-import type { ListRenderItem, View as ReactNativeView } from 'react-native';
+import {
+  ListRenderItem,
+  StyleSheet,
+  View as ReactNativeView,
+} from 'react-native';
 import type { SxProp } from 'dripsy';
 
 type Data<T> = Item & T;
@@ -20,7 +25,13 @@ const Select = <T, S extends ReactNativeView>({
   renderExhibitor,
   contentContainerStyle,
 }: Props<T, S>) => {
+  const sx = useSx();
   const [selected, setSelected] = useState<Data<T>[]>([]);
+
+  const listContentContainerStyle = useMemo(
+    () => StyleSheet.flatten([contentContainerStyle, sx({ p: '$1' })]),
+    [contentContainerStyle]
+  );
 
   const onListItemAdd = useCallback(
     (data: Data<T>) => {
@@ -68,7 +79,8 @@ const Select = <T, S extends ReactNativeView>({
       <List<Data<T>>
         data={data}
         renderItem={renderItem}
-        contentContainerStyle={contentContainerStyle}
+        withDivider={false}
+        contentContainerStyle={listContentContainerStyle}
       />
     </Popover>
   );
@@ -80,16 +92,32 @@ type ListItemProps<T> = {
   onPress: (item: T) => void;
 };
 const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
+  const [hovered, setHovered] = useState<boolean>(false);
+  const [pressed, setPressed] = useState<boolean>(false);
+
+  const backgroundColor = useMemo(
+    () => getListItemBackgroundColor(selected, pressed, hovered),
+    [selected, pressed, hovered]
+  );
+
   const handleOnPress = useCallback(() => onPress(item), [item, onPress]);
 
   return (
-    <ListItemContainer onPress={handleOnPress}>
+    <ListItemContainer
+      onPress={handleOnPress}
+      // @ts-expect-error: wrong Pressable types
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      backgroundColor={backgroundColor}
+    >
       {/* @ts-ignore: probably a bug in H5 types */}
       <Value>{item.value}</Value>
       {selected && (
         <Icon
           icon={{ pack: 'Feather', name: 'check' }}
-          color={theme.colors.$onSurface}
+          color={colord(theme.colors.$onSurface).alpha(0.9).toHex()}
           containerSx={{ paddingY: '$3', paddingX: '$4' }}
         />
       )}
@@ -97,11 +125,28 @@ const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
   );
 };
 
-const ListItemContainer = styled(Pressable)(() => ({
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-}));
+const getListItemBackgroundColor = (
+  selected: boolean,
+  pressed: boolean,
+  hovered: boolean
+): string | undefined => {
+  if (pressed) return colord(theme.colors.$primary).alpha(0.075).toHex();
+  if (selected) return colord(theme.colors.$primary).alpha(0.2).toHex();
+  if (hovered) return colord(theme.colors.$primary).alpha(0.075).toHex();
+  return undefined;
+};
+
+type ListItemContainerProps = { backgroundColor?: string };
+const ListItemContainer = styled(Pressable)(
+  ({ backgroundColor }: ListItemContainerProps) => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: theme.space.$3,
+    backgroundColor,
+    margin: '$1',
+  })
+);
 
 const Value = styled(H4)(() => ({
   paddingX: '$4',
