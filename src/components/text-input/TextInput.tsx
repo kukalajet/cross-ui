@@ -12,6 +12,8 @@ import type { Type as IconType } from '../icon';
 import theme from '../../configs';
 import Icon from '../icon';
 
+import type { View as ReactNativeView } from 'react-native';
+
 type State = 'default' | 'error' | 'disabled';
 
 type TextInputProps = {
@@ -29,128 +31,135 @@ type TextInputProps = {
   onChangeText?: (value: string) => void;
 };
 
-const TextInput = ({
-  label,
-  initialValue,
-  placeholder,
-  error,
-  height,
-  width = '100%',
-  disabled,
-  multiline,
-  pressable = true,
-  leadingIcon,
-  trailingIcon,
-  onChangeText,
-}: TextInputProps) => {
-  const [state, setState] = useState<State>('default');
-  const [focused, setFocused] = useState<boolean>(false);
-  const [hovered, setHovered] = useState<boolean>(false);
-  const [value, setValue] = useState<string | undefined>(initialValue);
-  const [containerHeight, setContainerHeight] = useState<
-    number | string | undefined
-  >(height);
-
-  useEffect(() => {
-    if (disabled) {
-      setState('disabled');
-      return;
-    }
-    if (error) {
-      setState('error');
-      return;
-    }
-    setState('default');
-  }, [disabled, error]);
-
-  const handleOnChangeText = useCallback((value: string) => {
-    setValue(value);
-    if (onChangeText) {
-      onChangeText(value);
-    }
-  }, []);
-
-  const handleOnFocus = useCallback(
-    (_: NativeSyntheticEvent<TextInputFocusEventData>) => {
-      setFocused(true);
-      setHovered(true);
+const TextInput = React.forwardRef<ReactNativeView, TextInputProps>(
+  (
+    {
+      label,
+      initialValue,
+      placeholder,
+      error,
+      height,
+      width = '100%',
+      disabled,
+      multiline,
+      pressable = true,
+      leadingIcon,
+      trailingIcon,
+      onChangeText,
     },
-    []
-  );
-
-  const handleOnBlur = useCallback(
-    (_: NativeSyntheticEvent<TextInputFocusEventData>) => {
-      setFocused(false);
-      setHovered(false);
-    },
-    []
-  );
-
-  const handleOnContainerSizeChange = (
-    event: NativeSyntheticEvent<TextInputContentSizeChangeEventData>
+    ref
   ) => {
-    if (multiline && Platform.OS === 'web') {
-      setContainerHeight(event.nativeEvent.contentSize.height);
-    }
-  };
+    const [state, setState] = useState<State>('default');
+    const [focused, setFocused] = useState<boolean>(false);
+    const [hovered, setHovered] = useState<boolean>(false);
+    const [value, setValue] = useState<string | undefined>(initialValue);
+    const [containerHeight, setContainerHeight] = useState<
+      number | string | undefined
+    >(height);
 
-  return (
-    <Container
-      width={width}
-      // @ts-expect-error
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* @ts-ignore: probably a bug in H4 types */}
-      {!!label && <Label disabled={disabled}>{label}</Label>}
-      <InputContainer
-        state={state}
-        focused={focused}
-        hovered={hovered}
-        pointerEvents={pressable ? 'auto' : 'none'}
+    useEffect(() => {
+      if (disabled) {
+        setState('disabled');
+        return;
+      }
+      if (error) {
+        setState('error');
+        return;
+      }
+      setState('default');
+    }, [disabled, error]);
+
+    const handleOnChangeText = useCallback((value: string) => {
+      setValue(value);
+      if (onChangeText) {
+        onChangeText(value);
+      }
+    }, []);
+
+    const handleOnFocus = useCallback(
+      (_: NativeSyntheticEvent<TextInputFocusEventData>) => {
+        setFocused(true);
+        setHovered(true);
+      },
+      []
+    );
+
+    const handleOnBlur = useCallback(
+      (_: NativeSyntheticEvent<TextInputFocusEventData>) => {
+        setFocused(false);
+        setHovered(false);
+      },
+      []
+    );
+
+    const handleOnContainerSizeChange = (
+      event: NativeSyntheticEvent<TextInputContentSizeChangeEventData>
+    ) => {
+      if (multiline && Platform.OS === 'web') {
+        setContainerHeight(event.nativeEvent.contentSize.height);
+      }
+    };
+
+    return (
+      <Container
+        ref={ref}
+        onPress={() => console.log('HEEEYYY')}
+        width={width}
+        // @ts-expect-error
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
       >
-        {!!leadingIcon && (
-          <Icon
-            icon={leadingIcon}
-            color={getBorderColor(state, focused, hovered)}
-            minimumMargins
-            containerSx={{
-              marginRight: '$1',
-              marginLeft: '$2',
-            }}
+        {/* @ts-ignore: probably a bug in H4 types */}
+        {!!label && <Label disabled={disabled}>{label}</Label>}
+        <InputContainer
+          state={state}
+          focused={focused}
+          hovered={hovered}
+          pointerEvents={pressable ? 'auto' : 'none'}
+        >
+          {!!leadingIcon && (
+            <Icon
+              icon={leadingIcon}
+              color={getBorderColor(state, focused, hovered)}
+              minimumMargins
+              containerSx={{
+                marginRight: '$1',
+                marginLeft: '$2',
+              }}
+            />
+          )}
+          <Input
+            value={value}
+            placeholder={placeholder}
+            onFocus={handleOnFocus}
+            onBlur={handleOnBlur}
+            onChangeText={handleOnChangeText}
+            onContentSizeChange={handleOnContainerSizeChange}
+            multiline={multiline}
+            editable={!disabled}
+            scrollEnabled={false}
+            hasLeadingIcon={!!leadingIcon}
+            hasTrailingIcon={!!trailingIcon}
+            containerHeight={containerHeight}
           />
-        )}
-        <Input
-          value={value}
-          placeholder={placeholder}
-          onFocus={handleOnFocus}
-          onBlur={handleOnBlur}
-          onChangeText={handleOnChangeText}
-          onContentSizeChange={handleOnContainerSizeChange}
-          multiline={multiline}
-          editable={!disabled}
-          scrollEnabled={false}
-          hasLeadingIcon={!!leadingIcon}
-          hasTrailingIcon={!!trailingIcon}
-          containerHeight={containerHeight}
-        />
-        {!!trailingIcon && (
-          <Icon
-            icon={trailingIcon}
-            color={getBorderColor(state, focused, hovered)}
-            minimumMargins
-            containerSx={{
-              marginRight: '$2',
-              marginLeft: '$1',
-            }}
-          />
-        )}
-      </InputContainer>
-      {/* @ts-ignore: probably a bug in H5 types */}
-      {!!error && <Error>{error}</Error>}
-    </Container>
-  );
-};
+          {!!trailingIcon && (
+            <Icon
+              icon={trailingIcon}
+              color={getBorderColor(state, focused, hovered)}
+              minimumMargins
+              containerSx={{
+                marginRight: '$2',
+                marginLeft: '$1',
+              }}
+            />
+          )}
+        </InputContainer>
+        {/* @ts-ignore: probably a bug in H5 types */}
+        {!!error && <Error>{error}</Error>}
+      </Container>
+    );
+  }
+);
 
 type ContainerProps = { width?: string | number };
 const Container = styled(Pressable)(({ width }: ContainerProps) => ({
