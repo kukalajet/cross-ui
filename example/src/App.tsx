@@ -32,7 +32,31 @@ export default function App() {
     <SafeAreaProvider>
       <CrossProvider>
         <View style={styles.container}>
-          <Select<{ id: string; value: string; color: string }, { id: string }>
+          <Select<{ id: string; value: string; color: string }, View>
+            data={[
+              { id: '1', value: 'Test1', color: 'color1' },
+              { id: '2', value: 'Test3', color: 'color2' },
+              { id: '3', value: 'Test3', color: 'color3' },
+              { id: '4', value: 'Test4', color: 'color4' },
+              { id: '5', value: 'Test5', color: 'color5' },
+              { id: '6', value: 'Test6', color: 'color6' },
+              { id: '7', value: 'Test7', color: 'color7' },
+              { id: '8', value: 'Test8', color: 'color8' },
+              { id: '9', value: 'Test9', color: 'color9' },
+              { id: '10', value: 'Test10', color: 'color10' },
+            ]}
+            renderExhibitor={(ref, handleMountPress) => (
+              <TextInput
+                ref={ref}
+                pressable={false}
+                onContainerPress={() => {
+                  console.log('pressed');
+                  handleMountPress();
+                }}
+              />
+            )}
+          />
+          {/* <Select<{ id: string; value: string; color: string }, View>
             data={[
               { id: '1', value: 'Test1', color: 'color1' },
               { id: '2', value: 'Test3', color: 'color2' },
@@ -66,7 +90,7 @@ export default function App() {
               </Pressable>
             )}
             // contentContainerStyle={{ flex: 1, paddingX: '$2', paddingY: '$2' }}
-          />
+          /> */}
           <View style={{ paddingVertical: 8 }}>
             <Button
               label="OK"

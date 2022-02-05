@@ -1,18 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 import { H4, H5, Pressable, styled, View } from 'dripsy';
-import {
+import { Platform } from 'react-native';
+import { colord } from 'colord';
+import theme from '../../configs';
+import Icon from '../icon';
+import type { Type as IconType } from '../icon';
+import type {
+  View as ReactNativeView,
   NativeSyntheticEvent,
-  Platform,
   TextInputContentSizeChangeEventData,
   TextInputFocusEventData,
 } from 'react-native';
-import { colord } from 'colord';
-import type { Type as IconType } from '../icon';
-import theme from '../../configs';
-import Icon from '../icon';
-
-import type { View as ReactNativeView } from 'react-native';
 
 type State = 'default' | 'error' | 'disabled';
 
@@ -29,6 +28,7 @@ type TextInputProps = {
   leadingIcon?: IconType;
   trailingIcon?: IconType;
   onChangeText?: (value: string) => void;
+  onContainerPress?: () => void;
 };
 
 const TextInput = React.forwardRef<ReactNativeView, TextInputProps>(
@@ -46,6 +46,7 @@ const TextInput = React.forwardRef<ReactNativeView, TextInputProps>(
       leadingIcon,
       trailingIcon,
       onChangeText,
+      onContainerPress,
     },
     ref
   ) => {
@@ -103,8 +104,8 @@ const TextInput = React.forwardRef<ReactNativeView, TextInputProps>(
     return (
       <Container
         ref={ref}
-        onPress={() => console.log('HEEEYYY')}
         width={width}
+        onPress={onContainerPress}
         // @ts-expect-error
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}

@@ -24,6 +24,7 @@ type Props<T> = {
   children: ReactElement;
   backdropOpacity?: number;
   backdropBackgroundColor?: string;
+  containerPositionTopOffset?: number;
 };
 
 const Popover = <T extends ReactNativeView>({
@@ -31,6 +32,7 @@ const Popover = <T extends ReactNativeView>({
   children,
   backdropOpacity,
   backdropBackgroundColor,
+  containerPositionTopOffset,
 }: Props<T>) => {
   const ref = useRef<T>(null);
   const [visible, setVisible] = useState<boolean>(false);
@@ -67,6 +69,7 @@ const Popover = <T extends ReactNativeView>({
             onPress={handleDismissPopoverPress}
             backdropOpacity={backdropOpacity}
             backdropBackgroundColor={backdropBackgroundColor}
+            positionTopOffset={containerPositionTopOffset}
           >
             {children}
           </ChildrenContainer>
@@ -89,18 +92,20 @@ type ChildrenProps = {
   targetLayout: LayoutRectangle;
   backdropOpacity?: number;
   backdropBackgroundColor?: string;
+  positionTopOffset?: number;
 };
 const ChildrenContainer = ({
   children,
   onPress,
   targetLayout,
   backdropBackgroundColor,
+  positionTopOffset = 4,
 }: ChildrenProps) => {
   const [layout, setLayout] = useState<Layout>({ width: 0, height: 0 });
   const position = useMemo<Position>(
     () => ({
       opacity: layout.height === 0 || layout.width === 0 ? 0 : 1,
-      top: targetLayout.y + targetLayout.height + 4,
+      top: targetLayout.y + targetLayout.height + positionTopOffset,
       left: targetLayout.x + targetLayout.width / 2 - layout.width / 2,
     }),
     [layout, targetLayout]
@@ -168,7 +173,10 @@ const PopoverContainer = styled(Pressable)(
       backgroundColor: theme.colors.$surface,
       shadowColor: theme.colors.$onSurface,
       shadowOpacity: 0.2,
-      borderRadius: theme.space.$3,
+      borderTopLeftRadius: theme.space.$1,
+      borderTopRightRadius: theme.space.$1,
+      borderBottomLeftRadius: theme.space.$3,
+      borderBottomRightRadius: theme.space.$3,
       shadowRadius: theme.space.$1,
       elevation: theme.space.$1,
       shadowOffset: {

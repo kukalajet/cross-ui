@@ -19,11 +19,13 @@ type Props<T, S> = {
   data: Data<T>[];
   renderExhibitor: (ref: RefObject<S>, onPress: () => void) => ReactElement;
   contentContainerStyle?: SxProp;
+  containerPositionTopOffset?: number;
 };
 const Select = <T, S extends ReactNativeView>({
   data,
   renderExhibitor,
   contentContainerStyle,
+  containerPositionTopOffset,
 }: Props<T, S>) => {
   const sx = useSx();
   const [selected, setSelected] = useState<Data<T>[]>([]);
@@ -75,7 +77,10 @@ const Select = <T, S extends ReactNativeView>({
   };
 
   return (
-    <Popover<S> renderExhibitor={renderExhibitor}>
+    <Popover<S>
+      renderExhibitor={renderExhibitor}
+      containerPositionTopOffset={containerPositionTopOffset}
+    >
       <List<Data<T>>
         data={data}
         renderItem={renderItem}
