@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FlatList } from 'react-native';
 import { useSx } from 'dripsy';
 import Divider from '../divider';
@@ -24,11 +24,16 @@ const List = <T extends Item>({
 }: Props<T & Item>) => {
   const sx = useSx();
 
+  const ItemSeparator = useMemo(
+    () => (withDivider ? <Divider /> : null),
+    [withDivider]
+  );
+
   return (
     <FlatList<T>
       data={data}
       renderItem={renderItem}
-      ItemSeparatorComponent={withDivider ? () => <Divider /> : null}
+      ItemSeparatorComponent={() => ItemSeparator}
       bounces={bounces}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       keyExtractor={(item, _) => item.id}
