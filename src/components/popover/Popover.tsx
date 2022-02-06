@@ -16,24 +16,29 @@ type Layout = { width: number; height: number };
 type TargetLayout = { x: number; y: number } & Layout;
 type Position = { opacity: number; top: number; left: number };
 
-type Props<T> = {
+type Props<T, S> = {
   renderExhibitor: (
     ref: RefObject<T>,
-    handleMountPress: () => void
+    handleMountPress: () => void,
+    /** Optional `data` created in the parent to be passed to the `Exhibitor` */
+    data?: Data<S> | Data<S>[]
   ) => ReactElement;
   children: ReactElement;
   backdropOpacity?: number;
   backdropBackgroundColor?: string;
   containerPositionTopOffset?: number;
+  /** Optional `data` created in the parent to be passed to the `Exhibitor` */
+  data?: Data<S> | Data<S>[];
 };
 
-const Popover = <T extends ReactNativeView>({
+const Popover = <T extends ReactNativeView, S = void>({
+  data,
   renderExhibitor,
   children,
   backdropOpacity,
   backdropBackgroundColor,
   containerPositionTopOffset,
-}: Props<T>) => {
+}: Props<T, S>) => {
   const ref = useRef<T>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [targetLayout, setTargetLayout] = useState<TargetLayout>({
@@ -55,9 +60,9 @@ const Popover = <T extends ReactNativeView>({
   }, []);
 
   const Exhibitor = useMemo(() => {
-    const element = renderExhibitor(ref, handleMountPress);
+    const element = renderExhibitor(ref, handleMountPress, data);
     return element;
-  }, []);
+  }, [renderExhibitor, data]);
 
   return (
     <Container>

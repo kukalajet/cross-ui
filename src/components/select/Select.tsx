@@ -13,11 +13,13 @@ import {
 } from 'react-native';
 import type { SxProp } from 'dripsy';
 
-type Data<T> = Item & T;
-
 type Props<T, S> = {
   data: Data<T>[];
-  renderExhibitor: (ref: RefObject<S>, onPress: () => void) => ReactElement;
+  renderExhibitor: (
+    ref: RefObject<S>,
+    onPress: () => void,
+    selected?: Data<T> | Data<T>[]
+  ) => ReactElement;
   contentContainerStyle?: SxProp;
   containerPositionTopOffset?: number;
 };
@@ -77,7 +79,8 @@ const Select = <T, S extends ReactNativeView>({
   };
 
   return (
-    <Popover<S>
+    <Popover<S, T>
+      data={selected}
       renderExhibitor={renderExhibitor}
       containerPositionTopOffset={containerPositionTopOffset}
     >

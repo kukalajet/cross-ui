@@ -45,16 +45,25 @@ export default function App() {
               { id: '9', value: 'Test9', color: 'color9' },
               { id: '10', value: 'Test10', color: 'color10' },
             ]}
-            renderExhibitor={(ref, handleMountPress) => (
-              <TextInput
-                ref={ref}
-                pressable={false}
-                onContainerPress={() => {
-                  console.log('pressed');
-                  handleMountPress();
-                }}
-              />
-            )}
+            renderExhibitor={(ref, handleMountPress, selected) => {
+              const processed = selected?.map((item) => item.id);
+              const all = processed?.join('-');
+
+              return (
+                <View style={{ height: 100, width: 300, paddingTop: 40 }}>
+                  <TextInput
+                    ref={ref}
+                    pressable={false}
+                    // placeholder={all}
+                    initialValue={all}
+                    onContainerPress={() => {
+                      console.log('pressed');
+                      handleMountPress();
+                    }}
+                  />
+                </View>
+              );
+            }}
           />
           {/* <Select<{ id: string; value: string; color: string }, View>
             data={[
