@@ -16,6 +16,8 @@ import type {
 type State = 'default' | 'error' | 'disabled';
 
 type TextInputProps = {
+  /** An interface for changing `value` from parent. Overrindes current the `value`. */
+  value?: string;
   label?: string;
   initialValue?: string;
   placeholder?: string;
@@ -34,6 +36,7 @@ type TextInputProps = {
 const TextInput = React.forwardRef<ReactNativeView, TextInputProps>(
   (
     {
+      value: parentValue,
       label,
       initialValue,
       placeholder,
@@ -69,6 +72,10 @@ const TextInput = React.forwardRef<ReactNativeView, TextInputProps>(
       }
       setState('default');
     }, [disabled, error]);
+
+    useEffect(() => {
+      setValue(parentValue);
+    }, [parentValue]);
 
     const handleOnChangeText = useCallback((value: string) => {
       setValue(value);

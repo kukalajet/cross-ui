@@ -46,8 +46,8 @@ export default function App() {
               { id: '10', value: 'Test10', color: 'color10' },
             ]}
             renderExhibitor={(ref, handleMountPress, selected) => {
-              const processed = selected?.map((item) => item.id);
-              const all = processed?.join('-');
+              const processed = selected?.map((item) => item.value);
+              const all = processed?.join(' - ');
 
               return (
                 <View style={{ height: 100, width: 300, paddingTop: 40 }}>
@@ -55,7 +55,8 @@ export default function App() {
                     ref={ref}
                     pressable={false}
                     // placeholder={all}
-                    initialValue={all}
+                    value={all}
+                    initialValue={'all'}
                     onContainerPress={() => {
                       console.log('pressed');
                       handleMountPress();
