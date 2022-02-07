@@ -33,6 +33,7 @@ export default function App() {
       <CrossProvider>
         <View style={styles.container}>
           <Select<{ id: string; value: string; color: string }, View>
+            mode="single"
             data={[
               { id: '1', value: 'Test1', color: 'color1' },
               { id: '2', value: 'Test3', color: 'color2' },
@@ -46,8 +47,12 @@ export default function App() {
               { id: '10', value: 'Test10', color: 'color10' },
             ]}
             renderExhibitor={(ref, handleMountPress, selected) => {
-              const processed = selected?.map((item) => item.value);
-              const all = processed?.join(' - ');
+              const processed = Array.isArray(selected)
+                ? selected?.map((item) => item.value)
+                : selected?.value;
+              const all = Array.isArray(selected)
+                ? processed?.join(' - ')
+                : processed;
 
               return (
                 <View style={{ height: 100, width: 300, paddingTop: 40 }}>

@@ -20,17 +20,19 @@ type Props<T, S> = {
     onPress: () => void,
     selected?: Data<T> | Data<T>[]
   ) => ReactElement;
+  mode: 'single' | 'multi';
   contentContainerStyle?: SxProp;
   containerPositionTopOffset?: number;
 };
 const Select = <T, S extends ReactNativeView>({
   data,
   renderExhibitor,
+  mode,
   contentContainerStyle,
   containerPositionTopOffset,
 }: Props<T, S>) => {
   const sx = useSx();
-  const [selected, setSelected] = useState<Data<T>[]>([]);
+  const [selected, setSelected] = useState<Data<T> | Data<T>[] | undefined>();
 
   const listContentContainerStyle = useMemo(
     () => StyleSheet.flatten([contentContainerStyle, sx({ p: '$1' })]),
@@ -39,24 +41,42 @@ const Select = <T, S extends ReactNativeView>({
 
   const onListItemAdd = useCallback(
     (data: Data<T>) => {
-      const newSelected = [...selected, data];
-      setSelected(newSelected);
+      if (mode === 'single') {
+        setSelected(data);
+      } else if (mode === 'multi') {
+        const current = (selected as Data<T>[]) || [];
+        const newSelected = [...current, data];
+        setSelected(newSelected);
+      }
     },
     [selected]
   );
 
   const onListItemRemove = useCallback(
     (data: Data<T>) => {
-      const newSelected = selected.filter((item) => item.id !== data.id);
-      setSelected(newSelected);
+      if (mode === 'single') {
+        setSelected(undefined);
+      } else if (mode === 'multi') {
+        const newSelected = (selected as Data<T>[]).filter(
+          (item) => item.id !== data.id
+        );
+        setSelected(newSelected);
+      }
     },
     [selected]
   );
 
   const isSelected = useCallback(
     (data: Data<T>) => {
-      const value = selected.some((item) => item.id === data.id);
-      return value;
+      if (mode === 'single') {
+        const current = selected as Data<T>;
+        const value = data.id === current?.id;
+        return value;
+      } else if (mode === 'multi') {
+        const current = (selected as Data<T>[]) || [];
+        const value = current.some((item) => item.id === data.id);
+        return value;
+      }
     },
     [selected]
   );
@@ -96,7 +116,7 @@ const Select = <T, S extends ReactNativeView>({
 
 type ListItemProps<T> = {
   item: Data<T>;
-  selected: boolean;
+  selected?: boolean;
   onPress: (item: T) => void;
 };
 const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
@@ -134,9 +154,9 @@ const ListItem = <T,>({ item, selected, onPress }: ListItemProps<T>) => {
 };
 
 const getListItemBackgroundColor = (
-  selected: boolean,
-  pressed: boolean,
-  hovered: boolean
+  selected?: boolean,
+  pressed?: boolean,
+  hovered?: boolean
 ): string | undefined => {
   if (pressed) return colord(theme.colors.$primary).alpha(0.075).toHex();
   if (selected) return colord(theme.colors.$primary).alpha(0.2).toHex();
