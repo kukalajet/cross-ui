@@ -17,6 +17,8 @@ type TargetLayout = { x: number; y: number } & Layout;
 type Position = { opacity: number; top: number; left: number };
 
 type Props<T, S> = {
+  /** Optional `data` created in the parent to be passed to the `Exhibitor` */
+  data?: Data<S> | Data<S>[];
   renderExhibitor: (
     ref: RefObject<T>,
     handleMountPress: () => void,
@@ -27,8 +29,7 @@ type Props<T, S> = {
   backdropOpacity?: number;
   backdropBackgroundColor?: string;
   containerPositionTopOffset?: number;
-  /** Optional `data` created in the parent to be passed to the `Exhibitor` */
-  data?: Data<S> | Data<S>[];
+  containerSx?: SxProp;
 };
 
 const Popover = <T extends ReactNativeView, S = void>({
@@ -38,6 +39,7 @@ const Popover = <T extends ReactNativeView, S = void>({
   backdropOpacity,
   backdropBackgroundColor,
   containerPositionTopOffset,
+  containerSx,
 }: Props<T, S>) => {
   const ref = useRef<T>(null);
   const [visible, setVisible] = useState<boolean>(false);
@@ -65,7 +67,7 @@ const Popover = <T extends ReactNativeView, S = void>({
   }, [renderExhibitor, data]);
 
   return (
-    <Container>
+    <Container containerSx={containerSx}>
       {Exhibitor}
       {visible && (
         <Portal>
@@ -84,12 +86,20 @@ const Popover = <T extends ReactNativeView, S = void>({
   );
 };
 
-const Container = styled(View)(() => ({
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  alignContent: 'center',
-}));
+type ContainerProps = { containerSx?: SxProp };
+const Container = styled(View)(({ containerSx }: ContainerProps) => {
+  const sx = useSx();
+
+  return StyleSheet.flatten([
+    {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignContent: 'center',
+    },
+    !!containerSx && sx(containerSx),
+  ]);
+});
 
 type ChildrenProps = {
   children: ReactElement;

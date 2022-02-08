@@ -23,6 +23,7 @@ type Props<T, S> = {
   mode: 'single' | 'multi';
   contentContainerStyle?: SxProp;
   containerPositionTopOffset?: number;
+  containerSx?: SxProp;
 };
 const Select = <T, S extends ReactNativeView>({
   data,
@@ -30,6 +31,7 @@ const Select = <T, S extends ReactNativeView>({
   mode,
   contentContainerStyle,
   containerPositionTopOffset,
+  containerSx,
 }: Props<T, S>) => {
   const sx = useSx();
   const [selected, setSelected] = useState<Data<T> | Data<T>[] | undefined>();
@@ -103,6 +105,7 @@ const Select = <T, S extends ReactNativeView>({
       data={selected}
       renderExhibitor={renderExhibitor}
       containerPositionTopOffset={containerPositionTopOffset}
+      containerSx={containerSx}
     >
       <List<Data<T>>
         data={data}
