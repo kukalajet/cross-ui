@@ -224,8 +224,8 @@ const Input = styled(RNTextInput)(
     justifyContent: 'center',
     alignItems: 'center',
     height: containerHeight,
-    paddingTop: theme.space.$4,
-    paddingBottom: theme.space.$4,
+    paddingTop: Platform.OS === 'android' ? theme.space.$3 : theme.space.$4,
+    paddingBottom: Platform.OS === 'android' ? theme.space.$3 : theme.space.$4,
     paddingStart: hasLeadingIcon
       ? theme.space.$1
       : [theme.space.$3, theme.space.$3, theme.space.$4],
