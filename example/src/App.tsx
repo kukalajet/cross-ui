@@ -33,13 +33,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <CrossProvider>
-        <ScrollView
-          style={{
-            flex: 1,
-            padding: 8,
-            marginTop: Platform.OS === 'ios' ? 40 : 0,
-          }}
-        >
+        <ScrollView style={styles.container}>
           <Select<{ id: string; value: string; color: string }, View>
             mode="single"
             data={[
@@ -66,7 +60,6 @@ export default function App() {
                 <TextInput
                   ref={ref}
                   pressable={false}
-                  // placeholder={all}
                   value={all}
                   initialValue={'all'}
                   onContainerPress={() => {
@@ -257,13 +250,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    backgroundColor: '#F9E9F9',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+    padding: 8,
+    backgroundColor: '#F9F0F9',
+    marginTop: Platform.OS === 'ios' ? 40 : 0,
   },
 });
