@@ -69,6 +69,7 @@ const Select = <T, S extends ReactNativeView>({
   );
 
   const isSelected = useCallback(
+    // @ts-expect-error: if not defined there is no need to return a value
     (data: Data<T>) => {
       if (mode === 'single') {
         const current = selected as Data<T>;
