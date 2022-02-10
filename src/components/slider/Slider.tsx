@@ -11,10 +11,13 @@ import type { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler
 import { StyleSheet } from 'react-native';
 import theme from '../../configs/theme';
 
-const KNOB_WIDTH = 72;
+const KNOB_WIDTH = 32;
 
-type SliderProps = { width?: number | string };
-const Slider = ({ width = '100%' }: SliderProps) => {
+type SliderProps = {
+  width?: number | string;
+  containerSx?: SxProp;
+};
+const Slider = ({ width = '100%', containerSx }: SliderProps) => {
   const translateX = useSharedValue<number>(0);
   const sliding = useSharedValue<boolean>(false);
 
@@ -42,54 +45,48 @@ const Slider = ({ width = '100%' }: SliderProps) => {
   });
 
   return (
-    <Container width={width}>
-      <Progress containerSx={progressStyle} />
+    <Container width={width} containerSx={containerSx}>
+      <Progress style={progressStyle} />
       <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <Knob containerSx={scrollTranslationStyle} />
+        <Knob style={scrollTranslationStyle} />
       </PanGestureHandler>
     </Container>
   );
 };
 
-type ContainerProps = { width: number | string };
-const Container = styled(View)(({ width }: ContainerProps) => ({
-  height: KNOB_WIDTH,
-  width,
-  justifyContent: 'center',
-  borderRadius: KNOB_WIDTH / 2,
-  backgroundColor: '$primary',
-}));
-
-type ProgressProps = { containerSx?: SxProp };
-const Progress = styled(Animated.View)(({ containerSx }: ProgressProps) => {
+type ContainerProps = { width: number | string; containerSx?: SxProp };
+const Container = styled(View)(({ width, containerSx }: ContainerProps) => {
   const sx = useSx();
 
-  const flattened = StyleSheet.flatten([
-    StyleSheet.absoluteFillObject,
-    { backgroundColor: theme.colors.$secondary, borderRadius: KNOB_WIDTH / 2 },
-    !!containerSx && sx(containerSx),
-  ]);
-
-  return flattened;
-});
-
-type KnobProps = { containerSx?: SxProp };
-const Knob = styled(Animated.View)(({ containerSx }: KnobProps) => {
-  const sx = useSx();
-
-  const flattened = StyleSheet.flatten([
+  return StyleSheet.flatten([
     {
+      flex: 1,
+      width,
       height: KNOB_WIDTH,
-      width: KNOB_WIDTH,
-      borderRadius: KNOB_WIDTH / 2,
-      backgroundColor: theme.colors.$onSecondary,
       justifyContent: 'center',
-      alignItems: 'center',
+      borderRadius: KNOB_WIDTH / 2,
+      backgroundColor: '$primary',
     },
     !!containerSx && sx(containerSx),
   ]);
+});
+
+const Progress = styled(Animated.View)(() => {
+  const flattened = StyleSheet.flatten([
+    StyleSheet.absoluteFillObject,
+    { backgroundColor: theme.colors.$secondary, borderRadius: KNOB_WIDTH / 2 },
+  ]);
 
   return flattened;
 });
+
+const Knob = styled(Animated.View)(() => ({
+  height: KNOB_WIDTH,
+  width: KNOB_WIDTH,
+  borderRadius: KNOB_WIDTH / 2,
+  backgroundColor: theme.colors.$onSecondary,
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
 
 export default Slider;

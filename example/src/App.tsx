@@ -16,7 +16,7 @@ import {
   TextInput,
   Modal,
   Select,
-  Popover,
+  Slider,
 } from 'cross-ui';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -34,6 +34,7 @@ export default function App() {
     <SafeAreaProvider>
       <CrossProvider>
         <ScrollView style={styles.container}>
+          <Slider containerSx={{ marginVertical: 16 }} />
           <Select<{ id: string; value: string; color: string }, View>
             mode="single"
             data={[

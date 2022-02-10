@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { StyleSheet, View as ReactNativeView } from 'react-native';
 import { styled, H4, Pressable, useSx } from 'dripsy';
 import { colord } from 'colord';
 import Popover from '../popover';
@@ -6,11 +7,7 @@ import List from '../list';
 import Icon from '../icon';
 import theme from '../../configs';
 import type { ReactElement, RefObject } from 'react';
-import {
-  ListRenderItem,
-  StyleSheet,
-  View as ReactNativeView,
-} from 'react-native';
+import type { ListRenderItem } from 'react-native';
 import type { SxProp } from 'dripsy';
 
 type Props<T, S> = {
