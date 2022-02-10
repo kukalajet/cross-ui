@@ -1,6 +1,6 @@
 import { colord } from 'colord';
 import { styled, View } from 'dripsy';
-import theme from '../../configs';
+import { theme } from '../../configs';
 
 const onSurfaceColor = theme.colors.$onSurface;
 

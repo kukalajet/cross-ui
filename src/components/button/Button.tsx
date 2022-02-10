@@ -3,7 +3,7 @@ import { H3, Pressable as DripsyPressable, styled } from 'dripsy';
 import { colord } from 'colord';
 import Icon from '../icon';
 import type { Type as IconType, Position as IconPosition } from '../icon';
-import theme from '../../configs/theme';
+import { theme } from '../../configs';
 
 export type Type = 'elevated' | 'filled' | 'tonal' | 'outlined' | 'text';
 

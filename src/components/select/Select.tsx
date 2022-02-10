@@ -5,7 +5,7 @@ import { colord } from 'colord';
 import Popover from '../popover';
 import List from '../list';
 import Icon from '../icon';
-import theme from '../../configs';
+import { theme } from '../../configs';
 import type { ReactElement, RefObject } from 'react';
 import type { ListRenderItem } from 'react-native';
 import type { SxProp } from 'dripsy';

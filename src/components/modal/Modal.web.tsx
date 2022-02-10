@@ -3,9 +3,9 @@ import { StyleSheet } from 'react-native';
 import { styled, Pressable, View, H3, H4 } from 'dripsy';
 import { Portal } from '@gorhom/portal';
 import { colord } from 'colord';
-import type { ModalProps, ModalSize } from './types';
-import theme from '../../configs';
+import { theme } from '../../configs';
 import Icon from '../icon';
+import type { ModalProps, ModalSize } from './types';
 
 const Modal = ({
   open,

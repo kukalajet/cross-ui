@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Pressable, styled, SxProp, useSx, View } from 'dripsy';
 import { Portal } from '@gorhom/portal';
 import { colord } from 'colord';
-import theme from '../../configs';
+import { theme } from '../../configs';
 import type { ReactElement, RefObject } from 'react';
 import type {
   GestureResponderEvent,

@@ -5,7 +5,7 @@ import {
   Ionicons,
   MaterialIcons,
 } from '@expo/vector-icons';
-import theme from '../../configs/theme';
+import { theme } from '../../configs';
 import type { Type as Icon } from './Icon';
 
 const defaultSize = theme.space.$6;

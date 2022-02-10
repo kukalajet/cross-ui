@@ -8,7 +8,7 @@ import {
 import { H3, H4, View, styled } from 'dripsy';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ModalProps, ModalSize } from './types';
-import theme from '../../configs';
+import { theme } from '../../configs';
 import Icon from '../icon';
 
 type Props = { withScrollView?: boolean } & ModalProps;

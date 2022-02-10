@@ -3,7 +3,7 @@ import { TextInput as RNTextInput } from 'react-native';
 import { H4, H5, Pressable, styled, View } from 'dripsy';
 import { Platform } from 'react-native';
 import { colord } from 'colord';
-import theme from '../../configs';
+import { theme } from '../../configs';
 import Icon from '../icon';
 import type { Type as IconType } from '../icon';
 import type {
