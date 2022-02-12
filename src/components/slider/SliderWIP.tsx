@@ -46,13 +46,13 @@ function generatePointers(
 
 type Props = { width?: number | string; containerSx?: SxProp };
 const Slider = ({ width = '100%', containerSx }: Props) => {
-  const x = useSharedValue<number>(-KNOB_WIDTH);
+  const x = useSharedValue<number>(-KNOB_WIDTH / 2);
   const [containerWidth, setContainerWidth] = useState<number | undefined>();
 
   const points: number[] = useMemo(() => {
     const points = generatePointers(
-      -KNOB_WIDTH,
-      containerWidth! - KNOB_WIDTH,
+      -KNOB_WIDTH / 2,
+      containerWidth! - KNOB_WIDTH / 2,
       10
     );
 
@@ -86,11 +86,10 @@ const Slider = ({ width = '100%', containerSx }: Props) => {
 
   return (
     <Container width={width} containerSx={containerSx}>
-      <Track onLayout={handleTrackOnLayout}>
-        <PanGestureHandler onGestureEvent={onKnobGestureHandler}>
-          <Knob style={translatedKnobStyle} />
-        </PanGestureHandler>
-      </Track>
+      <Track onLayout={handleTrackOnLayout} />
+      <PanGestureHandler onGestureEvent={onKnobGestureHandler}>
+        <Knob style={translatedKnobStyle} />
+      </PanGestureHandler>
     </Container>
   );
 };
@@ -114,11 +113,14 @@ const Knob = styled(Animated.View)(() => ({
   height: KNOB_WIDTH,
   width: KNOB_WIDTH,
   borderRadius: KNOB_WIDTH / 2,
-  backgroundColor: '#EFCFAB',
+  backgroundColor: theme.colors.$secondary,
 }));
 
 const Track = styled(View)(() => ({
-  px: KNOB_WIDTH / 2,
+  position: 'absolute',
+  left: KNOB_WIDTH / 2,
+  right: KNOB_WIDTH / 2,
+  height: KNOB_WIDTH / 5,
   backgroundColor: '$primary',
 }));
 

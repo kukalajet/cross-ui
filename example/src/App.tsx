@@ -33,7 +33,8 @@ export default function App() {
   return (
     <CrossProvider>
       <View style={styles.container}>
-        <Slider containerSx={{ marginVertical: 16 }} />
+        {/* <Slider containerSx={{ marginVertical: 16 }} /> */}
+        <Slider />
         {/* <Slider containerSx={{ marginVertical: 16 }} />
           <Select<{ id: string; value: string; color: string }, View>
             mode="single"
@@ -250,7 +251,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 8,
+    padding: 32,
     justifyContent: 'center',
     backgroundColor: '#F9F0F9',
     marginTop: Platform.OS === 'ios' ? 40 : 0,
