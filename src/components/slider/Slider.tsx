@@ -20,8 +20,12 @@ type SliderProps = {
 const Slider = ({ width = '100%', containerSx }: SliderProps) => {
   const translateX = useSharedValue<number>(0);
   const sliding = useSharedValue<boolean>(false);
+  const pressed = useSharedValue<boolean>(false);
 
   const scrollTranslationStyle = useAnimatedStyle(() => ({
+    backgroundColor: pressed.value
+      ? theme.colors.$primaryVariant
+      : theme.colors.$secondaryVariant,
     transform: [{ translateX: translateX.value }],
   }));
   const progressStyle = useAnimatedStyle(() => ({
@@ -34,13 +38,17 @@ const Slider = ({ width = '100%', containerSx }: SliderProps) => {
   >({
     onStart: (_, ctx) => {
       ctx.offsetX = translateX.value;
+      pressed.value = true;
     },
     onActive: (event, ctx) => {
-      sliding.value = true;
-      translateX.value = event.translationX + ctx.offsetX;
+      if (event.translationX > ctx.offsetX) {
+        sliding.value = true;
+        translateX.value = event.translationX + ctx.offsetX;
+      }
     },
     onEnd: () => {
       sliding.value = false;
+      pressed.value = false;
     },
   });
 
@@ -60,7 +68,6 @@ const Container = styled(View)(({ width, containerSx }: ContainerProps) => {
 
   return StyleSheet.flatten([
     {
-      flex: 1,
       width,
       height: KNOB_WIDTH,
       justifyContent: 'center',

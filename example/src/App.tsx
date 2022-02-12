@@ -31,10 +31,10 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <CrossProvider>
-        <ScrollView style={styles.container}>
-          <Slider containerSx={{ marginVertical: 16 }} />
+    <CrossProvider>
+      <View style={styles.container}>
+        <Slider containerSx={{ marginVertical: 16 }} />
+        {/* <Slider containerSx={{ marginVertical: 16 }} />
           <Select<{ id: string; value: string; color: string }, View>
             mode="single"
             data={[
@@ -241,10 +241,9 @@ export default function App() {
               width="75%"
               onPress={() => null}
             />
-          </View>
-        </ScrollView>
-      </CrossProvider>
-    </SafeAreaProvider>
+          </View> */}
+      </View>
+    </CrossProvider>
   );
 }
 
