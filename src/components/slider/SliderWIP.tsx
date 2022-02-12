@@ -47,20 +47,21 @@ function generatePointers(
 type Props = { width?: number | string; containerSx?: SxProp };
 const Slider = ({ width = '100%', containerSx }: Props) => {
   const x = useSharedValue<number>(-KNOB_WIDTH / 2);
-  const [containerWidth, setContainerWidth] = useState<number | undefined>();
+  const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const points: number[] = useMemo(() => {
-    const points = generatePointers(
-      -KNOB_WIDTH / 2,
-      containerWidth! - KNOB_WIDTH / 2,
-      10
-    );
-
+    const minimum = -KNOB_WIDTH / 2;
+    const maximum = containerWidth - KNOB_WIDTH / 2;
+    const points = generatePointers(minimum, maximum, 11);
     return points;
   }, [containerWidth]);
 
-  const translatedKnobStyle = useAnimatedStyle(() => ({
+  const animatedKnobStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: x.value }],
+  }));
+
+  const animatedSelectionStyle = useAnimatedStyle(() => ({
+    right: containerWidth - x.value,
   }));
 
   const onKnobGestureHandler = useAnimatedGestureHandler<
@@ -71,7 +72,9 @@ const Slider = ({ width = '100%', containerSx }: Props) => {
       ctx.offsetX = x.value;
     },
     onActive: (event, ctx) => {
-      x.value = event.translationX + ctx.offsetX;
+      const value = event.translationX + ctx.offsetX;
+      if (value + KNOB_WIDTH < 0) return;
+      x.value = value;
     },
     onEnd: (_, ctx) => {
       x.value = withTiming(withPointers(x.value, points));
@@ -87,8 +90,9 @@ const Slider = ({ width = '100%', containerSx }: Props) => {
   return (
     <Container width={width} containerSx={containerSx}>
       <Track onLayout={handleTrackOnLayout} />
+      <Selection style={animatedSelectionStyle} />
       <PanGestureHandler onGestureEvent={onKnobGestureHandler}>
-        <Knob style={translatedKnobStyle} />
+        <Knob style={animatedKnobStyle} />
       </PanGestureHandler>
     </Container>
   );
@@ -122,6 +126,14 @@ const Track = styled(View)(() => ({
   right: KNOB_WIDTH / 2,
   height: KNOB_WIDTH / 5,
   backgroundColor: '$primary',
+}));
+
+const Selection = styled(Animated.View)(() => ({
+  position: 'absolute',
+  left: KNOB_WIDTH / 2,
+  right: KNOB_WIDTH / 2,
+  height: KNOB_WIDTH / 4,
+  backgroundColor: '$secondaryVariant',
 }));
 
 export default Slider;
