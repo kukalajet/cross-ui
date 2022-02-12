@@ -250,7 +250,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 8,
+    // padding: 8,
+    justifyContent: 'center',
     backgroundColor: '#F9F0F9',
     marginTop: Platform.OS === 'ios' ? 40 : 0,
   },
