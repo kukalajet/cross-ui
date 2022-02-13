@@ -1,62 +1,98 @@
-import React from 'react';
-import { View, styled, useSx } from 'dripsy';
+import React, { useCallback, useMemo, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { styled, useSx, View } from 'dripsy';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
+import { theme } from '../../configs';
 import type { SxProp } from 'dripsy';
-import type { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { StyleSheet } from 'react-native';
-import theme from '../../configs/theme';
+import type { LayoutChangeEvent } from 'react-native';
 
-const KNOB_WIDTH = 32;
+const KNOB_WIDTH = 24;
 
-type SliderProps = {
-  width?: number | string;
-  containerSx?: SxProp;
-};
-const Slider = ({ width = '100%', containerSx }: SliderProps) => {
-  const translateX = useSharedValue<number>(0);
-  const sliding = useSharedValue<boolean>(false);
-  const pressed = useSharedValue<boolean>(false);
+function withPointers(value: number, points: number[]): number {
+  'worklet';
 
-  const scrollTranslationStyle = useAnimatedStyle(() => ({
-    backgroundColor: pressed.value
-      ? theme.colors.$primaryVariant
-      : theme.colors.$secondaryVariant,
-    transform: [{ translateX: translateX.value }],
+  const differencePoint = (point: number) => Math.abs(value - point);
+  const deltas = points.map((point: number) => differencePoint(point));
+  const minDelta = Math.min.apply(null, deltas);
+  const point = points.reduce((accumulator: number, point: number) =>
+    differencePoint(point) === minDelta ? point : accumulator
+  );
+
+  return point;
+}
+
+function generatePointers(
+  minimum: number,
+  maximum: number,
+  length: number
+): number[] {
+  const points = [minimum];
+  const interval = (maximum - minimum) / (length - 1);
+
+  for (let i = 1; i < length - 1; i++) points.push(minimum + interval * i);
+  points.push(maximum);
+
+  return points;
+}
+
+type Props = { width?: number | string; containerSx?: SxProp };
+const Slider = ({ width = '100%', containerSx }: Props) => {
+  const x = useSharedValue<number>(-KNOB_WIDTH / 2);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+
+  const points: number[] = useMemo(() => {
+    const minimum = -KNOB_WIDTH / 2;
+    const maximum = containerWidth - KNOB_WIDTH / 2;
+    const points = generatePointers(minimum, maximum, 11);
+    return points;
+  }, [containerWidth]);
+
+  const animatedKnobStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: x.value }],
   }));
-  const progressStyle = useAnimatedStyle(() => ({
-    width: translateX.value + KNOB_WIDTH,
+
+  const animatedSelectionStyle = useAnimatedStyle(() => ({
+    right: containerWidth - x.value,
   }));
 
-  const onGestureEvent = useAnimatedGestureHandler<
+  const onKnobGestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     { offsetX: number }
   >({
     onStart: (_, ctx) => {
-      ctx.offsetX = translateX.value;
-      pressed.value = true;
+      ctx.offsetX = x.value;
     },
     onActive: (event, ctx) => {
-      if (event.translationX > ctx.offsetX) {
-        sliding.value = true;
-        translateX.value = event.translationX + ctx.offsetX;
-      }
+      const value = event.translationX + ctx.offsetX;
+      if (value + KNOB_WIDTH < 0) return;
+      x.value = value;
     },
-    onEnd: () => {
-      sliding.value = false;
-      pressed.value = false;
+    onEnd: (_, ctx) => {
+      x.value = withTiming(withPointers(x.value, points));
+      ctx.offsetX = x.value;
     },
   });
 
+  const handleTrackOnLayout = useCallback((event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    setContainerWidth(width);
+  }, []);
+
   return (
     <Container width={width} containerSx={containerSx}>
-      <Progress style={progressStyle} />
-      <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <Knob style={scrollTranslationStyle} />
+      <Track onLayout={handleTrackOnLayout} />
+      <Selection style={animatedSelectionStyle} />
+      <PanGestureHandler onGestureEvent={onKnobGestureHandler}>
+        <Knob style={animatedKnobStyle} />
       </PanGestureHandler>
     </Container>
   );
@@ -65,23 +101,13 @@ const Slider = ({ width = '100%', containerSx }: SliderProps) => {
 type ContainerProps = { width: number | string; containerSx?: SxProp };
 const Container = styled(View)(({ width, containerSx }: ContainerProps) => {
   const sx = useSx();
-
-  return StyleSheet.flatten([
+  const flattened = StyleSheet.flatten([
     {
       width,
-      height: KNOB_WIDTH,
+      paddingHorizontal: KNOB_WIDTH / 2,
       justifyContent: 'center',
-      borderRadius: KNOB_WIDTH / 2,
-      backgroundColor: '$primary',
     },
     !!containerSx && sx(containerSx),
-  ]);
-});
-
-const Progress = styled(Animated.View)(() => {
-  const flattened = StyleSheet.flatten([
-    StyleSheet.absoluteFillObject,
-    { backgroundColor: theme.colors.$secondary, borderRadius: KNOB_WIDTH / 2 },
   ]);
 
   return flattened;
@@ -91,9 +117,23 @@ const Knob = styled(Animated.View)(() => ({
   height: KNOB_WIDTH,
   width: KNOB_WIDTH,
   borderRadius: KNOB_WIDTH / 2,
-  backgroundColor: theme.colors.$onSecondary,
-  justifyContent: 'center',
-  alignItems: 'center',
+  backgroundColor: theme.colors.$secondary,
+}));
+
+const Track = styled(View)(() => ({
+  position: 'absolute',
+  left: KNOB_WIDTH / 2,
+  right: KNOB_WIDTH / 2,
+  height: KNOB_WIDTH / 5,
+  backgroundColor: '$primary',
+}));
+
+const Selection = styled(Animated.View)(() => ({
+  position: 'absolute',
+  left: KNOB_WIDTH / 2,
+  right: KNOB_WIDTH / 2,
+  height: KNOB_WIDTH / 4,
+  backgroundColor: '$secondaryVariant',
 }));
 
 export default Slider;
