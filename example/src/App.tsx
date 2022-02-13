@@ -34,7 +34,7 @@ export default function App() {
     <CrossProvider>
       <View style={styles.container}>
         {/* <Slider containerSx={{ marginVertical: 16 }} /> */}
-        <Slider />
+        <Slider label={'Test'} steps={3} />
         {/* <Slider containerSx={{ marginVertical: 16 }} />
           <Select<{ id: string; value: string; color: string }, View>
             mode="single"
