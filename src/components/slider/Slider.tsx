@@ -2,9 +2,10 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { styled, useSx, View, H4 } from 'dripsy';
 import Animated, {
+  runOnJS,
   useAnimatedGestureHandler,
+  useAnimatedReaction,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -17,11 +18,6 @@ import type { SxProp } from 'dripsy';
 import type { LayoutChangeEvent } from 'react-native';
 
 const KNOB_WIDTH = 24;
-
-// API
-// minimum: string;
-// maximum: string;
-// steps: number;
 
 type Props = {
   label: string;
@@ -39,8 +35,19 @@ const Slider = ({
   width = '100%',
   containerSx,
 }: Props) => {
+  const [currentValue, setCurrentValue] = useState<number | undefined>();
   const [trackWidth, setTrackWidth] = useState<number>(0);
   const x = useSharedValue<number>(-KNOB_WIDTH / 2);
+
+  const values: number[] = useMemo(() => {
+    const interval = (maximum - minimum) / steps;
+    const values = [];
+    for (let i = 0; i <= steps; i++) {
+      values.push(minimum + interval * i);
+    }
+
+    return values;
+  }, [minimum, maximum, steps]);
 
   const points: number[] = useMemo(() => {
     const minimum = -KNOB_WIDTH / 2;
@@ -49,10 +56,15 @@ const Slider = ({
     return points;
   }, [steps, trackWidth]);
 
-  // WIP
-  // const test = useDerivedValue(() => {
-  //   return x.value;
-  // });
+  const handleSliderValueChanged = useCallback((index: number) => {
+    const value = values[index];
+    setCurrentValue(value);
+  }, []);
+
+  useAnimatedReaction(
+    () => x.value,
+    (value) => setClosestValue(points, value, handleSliderValueChanged)
+  );
 
   const animatedKnobStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: x.value }],
@@ -89,7 +101,10 @@ const Slider = ({
 
   return (
     <React.Fragment>
-      <Label>{label}</Label>
+      <Header>
+        <Label>{label}</Label>
+        <Value>{currentValue}</Value>
+      </Header>
       <SliderContainer width={width} containerSx={containerSx}>
         <Track onLayout={handleTrackOnLayout} />
         <Selection style={animatedSelectionStyle} />
@@ -101,10 +116,15 @@ const Slider = ({
   );
 };
 
-const Label = styled(H4)(() => ({
+const Header = styled(View)(() => ({
   px: KNOB_WIDTH / 2,
   py: '$2',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
 }));
+
+const Label = styled(H4)(() => ({}));
+const Value = styled(H4)(() => ({}));
 
 type SliderContainerProps = { width: number | string; containerSx?: SxProp };
 const SliderContainer = styled(View)(
@@ -150,7 +170,6 @@ const Selection = styled(Animated.View)(() => ({
 
 function withPointers(value: number, points: number[]): number {
   'worklet';
-
   const differencePoint = (point: number) => Math.abs(value - point);
   const deltas = points.map((point: number) => differencePoint(point));
   const minDelta = Math.min.apply(null, deltas);
@@ -167,7 +186,6 @@ function generatePointers(
   length: number
 ): number[] {
   'worklet';
-
   const points = [minimum];
   const interval = (maximum - minimum) / (length - 1);
 
@@ -177,13 +195,16 @@ function generatePointers(
   return points;
 }
 
-function getClosestValue(points: number[], current: number): number | null {
+function setClosestValue(
+  points: number[],
+  current: number,
+  callback: (value: number) => void
+) {
   'worklet';
-
   const indexes = points.map((item) => Math.abs(item - current));
   const minimum = Math.min.apply(Math, indexes);
-  const closest = points[indexes.indexOf(minimum)];
-  return closest;
+  const index = indexes.indexOf(minimum);
+  runOnJS(callback)(index);
 }
 
 export default Slider;
