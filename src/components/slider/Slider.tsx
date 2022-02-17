@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { styled, useSx, View, H4 } from 'dripsy';
+import { styled, useSx, View, H4, Text } from 'dripsy';
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -38,6 +38,7 @@ const Slider = ({
   const [currentValue, setCurrentValue] = useState<number | undefined>();
   const [trackWidth, setTrackWidth] = useState<number>(0);
   const x = useSharedValue<number>(-KNOB_WIDTH / 2);
+  const secondaryX = useSharedValue<number>(trackWidth - KNOB_WIDTH / 2);
 
   const values: number[] = useMemo(() => {
     const interval = (maximum - minimum) / steps;
@@ -70,6 +71,11 @@ const Slider = ({
     transform: [{ translateX: x.value }],
   }));
 
+  const animatedSecondaryKnobStyle = useAnimatedStyle(() => ({
+    // removing KNOB_WIDTH here removes the padding applied around the parent
+    transform: [{ translateX: trackWidth - KNOB_WIDTH - secondaryX.value }],
+  }));
+
   const animatedSelectionStyle = useAnimatedStyle(() => ({
     right: trackWidth - x.value,
   }));
@@ -83,14 +89,30 @@ const Slider = ({
     },
     onActive: (event, ctx) => {
       const value = event.translationX + ctx.offsetX;
-      if (value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH) {
-        return;
-      }
+      if (value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH) return;
       x.value = value;
     },
     onEnd: (_, ctx) => {
       x.value = withTiming(withPointers(x.value, points));
       ctx.offsetX = x.value;
+    },
+  });
+
+  const onSecondaryKnobGestureHandler = useAnimatedGestureHandler<
+    PanGestureHandlerGestureEvent,
+    { offsetX: number }
+  >({
+    onStart: (_, ctx) => {
+      ctx.offsetX = secondaryX.value;
+    },
+    onActive: (event, ctx) => {
+      const value = ctx.offsetX - event.translationX;
+      if (value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH - 2) return;
+      secondaryX.value = value;
+    },
+    onEnd: (_, ctx) => {
+      secondaryX.value = withTiming(withPointers(secondaryX.value, points));
+      ctx.offsetX = secondaryX.value;
     },
   });
 
@@ -110,6 +132,9 @@ const Slider = ({
         <Selection style={animatedSelectionStyle} />
         <PanGestureHandler onGestureEvent={onKnobGestureHandler}>
           <Knob style={animatedKnobStyle} />
+        </PanGestureHandler>
+        <PanGestureHandler onGestureEvent={onSecondaryKnobGestureHandler}>
+          <Knob style={animatedSecondaryKnobStyle} />
         </PanGestureHandler>
       </SliderContainer>
     </React.Fragment>
