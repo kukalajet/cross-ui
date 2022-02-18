@@ -36,6 +36,9 @@ const Slider = ({
   containerSx,
 }: Props) => {
   const [currentValue, setCurrentValue] = useState<number | undefined>();
+  const [secondaryCurrentValue, setSecondaryCurrentValue] = useState<
+    number | undefined
+  >();
   const [trackWidth, setTrackWidth] = useState<number>(0);
   const x = useSharedValue<number>(-KNOB_WIDTH / 2);
   const secondaryX = useSharedValue<number>(trackWidth - KNOB_WIDTH / 2);
@@ -57,14 +60,28 @@ const Slider = ({
     return points;
   }, [steps, trackWidth]);
 
-  const handleSliderValueChanged = useCallback((index: number) => {
-    const value = values[index];
-    setCurrentValue(value);
-  }, []);
+  const handleSliderValueChanged = useCallback(
+    (index: number, set: (value: number) => void) => {
+      const value = values[index];
+      set(value);
+    },
+    []
+  );
 
   useAnimatedReaction(
     () => x.value,
-    (value) => setClosestValue(points, value, handleSliderValueChanged)
+    (value) =>
+      setClosestValue(points, value, (value) =>
+        handleSliderValueChanged(value, setCurrentValue)
+      )
+  );
+
+  useAnimatedReaction(
+    () => secondaryX.value,
+    (value) =>
+      setClosestValue(points, value, (value) =>
+        handleSliderValueChanged(value, setSecondaryCurrentValue)
+      )
   );
 
   const animatedKnobStyle = useAnimatedStyle(() => ({
@@ -125,7 +142,8 @@ const Slider = ({
     <React.Fragment>
       <Header>
         <Label>{label}</Label>
-        <Value>{currentValue}</Value>
+        <Value>Primary: {currentValue}</Value>
+        <Value>Secondary: {secondaryCurrentValue}</Value>
       </Header>
       <SliderContainer width={width} containerSx={containerSx}>
         <Track onLayout={handleTrackOnLayout} />
@@ -169,6 +187,7 @@ const SliderContainer = styled(View)(
 );
 
 const Knob = styled(Animated.View)(() => ({
+  position: 'absolute',
   height: KNOB_WIDTH,
   width: KNOB_WIDTH,
   borderRadius: KNOB_WIDTH / 2,
