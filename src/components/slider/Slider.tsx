@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { styled, useSx, View, H4, Text } from 'dripsy';
+import { styled, useSx, View, H4 } from 'dripsy';
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -68,20 +68,22 @@ const Slider = ({
     []
   );
 
+  const handlePrimarySliderValue = useCallback((value: number) => {
+    handleSliderValueChanged(value, setCurrentValue);
+  }, []);
+
+  const handleSecondarySliderValue = useCallback((value: number) => {
+    handleSliderValueChanged(value, setSecondaryCurrentValue);
+  }, []);
+
   useAnimatedReaction(
     () => x.value,
-    (value) =>
-      setClosestValue(points, value, (value) =>
-        handleSliderValueChanged(value, setCurrentValue)
-      )
+    (value) => setClosestValue(points, value, handlePrimarySliderValue)
   );
 
   useAnimatedReaction(
     () => secondaryX.value,
-    (value) =>
-      setClosestValue(points, value, (value) =>
-        handleSliderValueChanged(value, setSecondaryCurrentValue)
-      )
+    (value) => setClosestValue(points, value, handleSecondarySliderValue)
   );
 
   const animatedKnobStyle = useAnimatedStyle(() => ({
