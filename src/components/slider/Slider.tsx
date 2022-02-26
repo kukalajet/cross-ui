@@ -27,6 +27,7 @@ type Props = {
   width?: number | string;
   containerSx?: SxProp;
 };
+
 const Slider = ({
   label,
   minimum = 0,
@@ -52,6 +53,14 @@ const Slider = ({
 
     return values;
   }, [minimum, maximum, steps]);
+
+  const interval = useMemo(() => {
+    const minimum = -KNOB_WIDTH / 2;
+    const maximum = trackWidth - KNOB_WIDTH / 2;
+    const length = steps;
+    const interval = (maximum - minimum) / length;
+    return interval;
+  }, [steps, trackWidth]);
 
   const points: number[] = useMemo(() => {
     const minimum = -KNOB_WIDTH / 2;
@@ -108,6 +117,7 @@ const Slider = ({
     },
     onActive: (event, ctx) => {
       const value = event.translationX + ctx.offsetX;
+      if (value > trackWidth - secondaryX.value - KNOB_WIDTH - interval) return;
       if (value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH) return;
       x.value = value;
     },
@@ -126,6 +136,7 @@ const Slider = ({
     },
     onActive: (event, ctx) => {
       const value = ctx.offsetX - event.translationX;
+      if (value > trackWidth - x.value - KNOB_WIDTH - interval) return;
       if (value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH - 2) return;
       secondaryX.value = value;
     },
