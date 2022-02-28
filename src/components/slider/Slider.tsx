@@ -25,6 +25,7 @@ type Props = {
   maximum: number;
   steps: number;
   width?: number | string;
+  bounding?: boolean;
   containerSx?: SxProp;
 };
 
@@ -34,15 +35,14 @@ const Slider = ({
   maximum = 100,
   steps = 10,
   width = '100%',
+  bounding = false,
   containerSx,
 }: Props) => {
-  const [currentValue, setCurrentValue] = useState<number | undefined>();
-  const [secondaryCurrentValue, setSecondaryCurrentValue] = useState<
-    number | undefined
-  >();
   const [trackWidth, setTrackWidth] = useState<number>(0);
-  const leading = useSharedValue<number>(-KNOB_WIDTH / 2);
-  const trailing = useSharedValue<number>(trackWidth - KNOB_WIDTH / 2);
+  const [leadingValue, setLeadingValue] = useState<number | undefined>();
+  const [trailingValue, setTrailingValue] = useState<number | undefined>();
+  const leadingPosition = useSharedValue<number>(-KNOB_WIDTH / 2);
+  const trailingPosition = useSharedValue<number>(trackWidth - KNOB_WIDTH / 2);
 
   const values: number[] = useMemo(() => {
     const interval = (maximum - minimum) / steps;
@@ -78,34 +78,36 @@ const Slider = ({
   );
 
   const handlePrimarySliderValue = useCallback((value: number) => {
-    handleSliderValueChanged(value, setCurrentValue);
+    handleSliderValueChanged(value, setLeadingValue);
   }, []);
 
   const handleSecondarySliderValue = useCallback((value: number) => {
-    handleSliderValueChanged(value, setSecondaryCurrentValue);
+    handleSliderValueChanged(value, setTrailingValue);
   }, []);
 
   useAnimatedReaction(
-    () => leading.value,
+    () => leadingPosition.value,
     (value) => setClosestValue(points, value, handlePrimarySliderValue)
   );
 
   useAnimatedReaction(
-    () => trailing.value,
+    () => trailingPosition.value,
     (value) => setClosestValue(points, value, handleSecondarySliderValue)
   );
 
   const animatedKnobStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: leading.value }],
+    transform: [{ translateX: leadingPosition.value }],
   }));
 
   const animatedSecondaryKnobStyle = useAnimatedStyle(() => ({
     // removing KNOB_WIDTH here removes the padding applied around the parent
-    transform: [{ translateX: trackWidth - KNOB_WIDTH - trailing.value }],
+    transform: [
+      { translateX: trackWidth - KNOB_WIDTH - trailingPosition.value },
+    ],
   }));
 
   const animatedSelectionStyle = useAnimatedStyle(() => ({
-    right: trackWidth - leading.value,
+    right: trackWidth - leadingPosition.value,
   }));
 
   const onKnobGestureHandler = useAnimatedGestureHandler<
@@ -113,17 +115,25 @@ const Slider = ({
     { offsetX: number }
   >({
     onStart: (_, ctx) => {
-      ctx.offsetX = leading.value;
+      ctx.offsetX = leadingPosition.value;
     },
     onActive: (event, ctx) => {
       const value = event.translationX + ctx.offsetX;
-      if (value > trackWidth - trailing.value - KNOB_WIDTH - interval) return;
-      if (value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH) return;
-      leading.value = value;
+
+      const otherKnobBound =
+        bounding &&
+        value > trackWidth - trailingPosition.value - KNOB_WIDTH - interval;
+      const trackBound =
+        value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH;
+      if (otherKnobBound || trackBound) return;
+
+      leadingPosition.value = value;
     },
     onEnd: (_, ctx) => {
-      leading.value = withTiming(withPointers(leading.value, points));
-      ctx.offsetX = leading.value;
+      leadingPosition.value = withTiming(
+        withPointers(leadingPosition.value, points)
+      );
+      ctx.offsetX = leadingPosition.value;
     },
   });
 
@@ -132,17 +142,25 @@ const Slider = ({
     { offsetX: number }
   >({
     onStart: (_, ctx) => {
-      ctx.offsetX = trailing.value;
+      ctx.offsetX = trailingPosition.value;
     },
     onActive: (event, ctx) => {
       const value = ctx.offsetX - event.translationX;
-      if (value > trackWidth - leading.value - KNOB_WIDTH - interval) return;
-      if (value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH - 2) return;
-      trailing.value = value;
+
+      const otherKnobBound =
+        bounding &&
+        value > trackWidth - leadingPosition.value - KNOB_WIDTH - interval;
+      const trackBound =
+        value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH - 2;
+      if (otherKnobBound || trackBound) return;
+
+      trailingPosition.value = value;
     },
     onEnd: (_, ctx) => {
-      trailing.value = withTiming(withPointers(trailing.value, points));
-      ctx.offsetX = trailing.value;
+      trailingPosition.value = withTiming(
+        withPointers(trailingPosition.value, points)
+      );
+      ctx.offsetX = trailingPosition.value;
     },
   });
 
@@ -155,8 +173,8 @@ const Slider = ({
     <React.Fragment>
       <Header>
         <Label>{label}</Label>
-        <Value>Primary: {currentValue}</Value>
-        <Value>Secondary: {secondaryCurrentValue}</Value>
+        <Value>Primary: {leadingValue}</Value>
+        <Value>Secondary: {trailingValue}</Value>
       </Header>
       <SliderContainer width={width} containerSx={containerSx}>
         <Track onLayout={handleTrackOnLayout} />
