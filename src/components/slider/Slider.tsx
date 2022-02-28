@@ -95,11 +95,11 @@ const Slider = ({
     (value) => setClosestValue(points, value, handleSecondarySliderValue)
   );
 
-  const animatedKnobStyle = useAnimatedStyle(() => ({
+  const animatedLeadingKnobStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: leadingPosition.value }],
   }));
 
-  const animatedSecondaryKnobStyle = useAnimatedStyle(() => ({
+  const animatedTrailingKnobStyle = useAnimatedStyle(() => ({
     // removing KNOB_WIDTH here removes the padding applied around the parent
     transform: [
       { translateX: trackWidth - KNOB_WIDTH - trailingPosition.value },
@@ -110,7 +110,7 @@ const Slider = ({
     right: trackWidth - leadingPosition.value,
   }));
 
-  const onKnobGestureHandler = useAnimatedGestureHandler<
+  const onLeadingKnobGestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     { offsetX: number }
   >({
@@ -137,7 +137,7 @@ const Slider = ({
     },
   });
 
-  const onSecondaryKnobGestureHandler = useAnimatedGestureHandler<
+  const onTrailingKnobGestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     { offsetX: number }
   >({
@@ -174,17 +174,19 @@ const Slider = ({
       <Header>
         <Label>{label}</Label>
         <Value>Primary: {leadingValue}</Value>
-        <Value>Secondary: {trailingValue}</Value>
+        {bounding && <Value>Secondary: {trailingValue}</Value>}
       </Header>
       <SliderContainer width={width} containerSx={containerSx}>
         <Track onLayout={handleTrackOnLayout} />
         <Selection style={animatedSelectionStyle} />
-        <PanGestureHandler onGestureEvent={onKnobGestureHandler}>
-          <Knob style={animatedKnobStyle} />
+        <PanGestureHandler onGestureEvent={onLeadingKnobGestureHandler}>
+          <Knob style={animatedLeadingKnobStyle} />
         </PanGestureHandler>
-        <PanGestureHandler onGestureEvent={onSecondaryKnobGestureHandler}>
-          <Knob style={animatedSecondaryKnobStyle} />
-        </PanGestureHandler>
+        {bounding && (
+          <PanGestureHandler onGestureEvent={onTrailingKnobGestureHandler}>
+            <Knob style={animatedTrailingKnobStyle} />
+          </PanGestureHandler>
+        )}
       </SliderContainer>
     </React.Fragment>
   );
@@ -192,7 +194,7 @@ const Slider = ({
 
 const Header = styled(View)(() => ({
   px: KNOB_WIDTH / 2,
-  py: '$2',
+  py: '$4',
   flexDirection: 'row',
   justifyContent: 'space-between',
 }));
