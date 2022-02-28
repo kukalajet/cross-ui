@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { styled, useSx, View, H4 } from 'dripsy';
 import Animated, {
   runOnJS,
@@ -35,14 +35,20 @@ const Slider = ({
   maximum = 100,
   steps = 10,
   width = '100%',
-  bounding = false,
+  bounding = true,
   containerSx,
 }: Props) => {
   const [trackWidth, setTrackWidth] = useState<number>(0);
+
+  const leadingPositionInitialValue =
+    Platform.OS === 'web' ? -KNOB_WIDTH / 2 : 0;
+  const trailingPositionInitialValue =
+    Platform.OS === 'web' ? trackWidth + KNOB_WIDTH / 2 : trackWidth;
+
   const [leadingValue, setLeadingValue] = useState<number | undefined>();
   const [trailingValue, setTrailingValue] = useState<number | undefined>();
-  const leadingPosition = useSharedValue<number>(-KNOB_WIDTH / 2);
-  const trailingPosition = useSharedValue<number>(trackWidth - KNOB_WIDTH / 2);
+  const leadingPosition = useSharedValue<number>(leadingPositionInitialValue);
+  const trailingPosition = useSharedValue<number>(trailingPositionInitialValue);
 
   const values: number[] = useMemo(() => {
     const interval = (maximum - minimum) / steps;
@@ -55,16 +61,16 @@ const Slider = ({
   }, [minimum, maximum, steps]);
 
   const interval = useMemo(() => {
-    const minimum = -KNOB_WIDTH / 2;
-    const maximum = trackWidth - KNOB_WIDTH / 2;
+    const minimum = leadingPositionInitialValue;
+    const maximum = trailingPositionInitialValue;
     const length = steps;
     const interval = (maximum - minimum) / length;
     return interval;
   }, [steps, trackWidth]);
 
   const points: number[] = useMemo(() => {
-    const minimum = -KNOB_WIDTH / 2;
-    const maximum = trackWidth - KNOB_WIDTH / 2;
+    const minimum = leadingPositionInitialValue;
+    const maximum = trailingPositionInitialValue;
     const points = generatePointers(minimum, maximum, steps + 1);
     return points;
   }, [steps, trackWidth]);
@@ -101,9 +107,7 @@ const Slider = ({
 
   const animatedTrailingKnobStyle = useAnimatedStyle(() => ({
     // removing KNOB_WIDTH here removes the padding applied around the parent
-    transform: [
-      { translateX: trackWidth - KNOB_WIDTH - trailingPosition.value },
-    ],
+    transform: [{ translateX: trackWidth - trailingPosition.value }],
   }));
 
   const animatedSelectionStyle = useAnimatedStyle(() => ({
@@ -120,12 +124,12 @@ const Slider = ({
     onActive: (event, ctx) => {
       const value = event.translationX + ctx.offsetX;
 
-      const otherKnobBound =
+      const trailingKnobBound =
         bounding &&
         value > trackWidth - trailingPosition.value - KNOB_WIDTH - interval;
       const trackBound =
         value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH;
-      if (otherKnobBound || trackBound) return;
+      if (trailingKnobBound || trackBound) return;
 
       leadingPosition.value = value;
     },
@@ -147,12 +151,12 @@ const Slider = ({
     onActive: (event, ctx) => {
       const value = ctx.offsetX - event.translationX;
 
-      const otherKnobBound =
+      const leadingKnobBound =
         bounding &&
         value > trackWidth - leadingPosition.value - KNOB_WIDTH - interval;
       const trackBound =
         value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH - 2;
-      if (otherKnobBound || trackBound) return;
+      if (leadingKnobBound || trackBound) return;
 
       trailingPosition.value = value;
     },
