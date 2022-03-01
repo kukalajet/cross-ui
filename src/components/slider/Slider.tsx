@@ -39,16 +39,10 @@ const Slider = ({
   containerSx,
 }: Props) => {
   const [trackWidth, setTrackWidth] = useState<number>(0);
-
-  const leadingPositionInitialValue =
-    Platform.OS === 'web' ? -KNOB_WIDTH / 2 : 0;
-  const trailingPositionInitialValue =
-    Platform.OS === 'web' ? trackWidth + KNOB_WIDTH / 2 : trackWidth;
-
   const [leadingValue, setLeadingValue] = useState<number | undefined>();
   const [trailingValue, setTrailingValue] = useState<number | undefined>();
-  const leadingPosition = useSharedValue<number>(leadingPositionInitialValue);
-  const trailingPosition = useSharedValue<number>(trailingPositionInitialValue);
+  const leadingPosition = useSharedValue<number>(0);
+  const trailingPosition = useSharedValue<number>(trackWidth);
 
   const values: number[] = useMemo(() => {
     const interval = (maximum - minimum) / steps;
@@ -61,16 +55,16 @@ const Slider = ({
   }, [minimum, maximum, steps]);
 
   const interval = useMemo(() => {
-    const minimum = leadingPositionInitialValue;
-    const maximum = trailingPositionInitialValue;
+    const minimum = 0;
+    const maximum = trackWidth;
     const length = steps;
     const interval = (maximum - minimum) / length;
     return interval;
   }, [steps, trackWidth]);
 
   const points: number[] = useMemo(() => {
-    const minimum = leadingPositionInitialValue;
-    const maximum = trailingPositionInitialValue;
+    const minimum = 0;
+    const maximum = trackWidth;
     const points = generatePointers(minimum, maximum, steps + 1);
     return points;
   }, [steps, trackWidth]);
@@ -110,9 +104,13 @@ const Slider = ({
     transform: [{ translateX: trackWidth - trailingPosition.value }],
   }));
 
-  const animatedSelectionStyle = useAnimatedStyle(() => ({
-    right: trackWidth - leadingPosition.value,
-  }));
+  const animatedSelectionStyle = useAnimatedStyle(() => {
+    const right =
+      Platform.OS === 'web'
+        ? trackWidth - leadingPosition.value + KNOB_WIDTH / 2
+        : trackWidth - leadingPosition.value;
+    return { right };
+  });
 
   const onLeadingKnobGestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
@@ -127,8 +125,7 @@ const Slider = ({
       const trailingKnobBound =
         bounding &&
         value > trackWidth - trailingPosition.value - KNOB_WIDTH - interval;
-      const trackBound =
-        value < -KNOB_WIDTH + 2 || value > trackWidth + KNOB_WIDTH;
+      const trackBound = value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH;
       if (trailingKnobBound || trackBound) return;
 
       leadingPosition.value = value;
@@ -154,8 +151,7 @@ const Slider = ({
       const leadingKnobBound =
         bounding &&
         value > trackWidth - leadingPosition.value - KNOB_WIDTH - interval;
-      const trackBound =
-        value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH - 2;
+      const trackBound = value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH;
       if (leadingKnobBound || trackBound) return;
 
       trailingPosition.value = value;
@@ -170,7 +166,8 @@ const Slider = ({
 
   const handleTrackOnLayout = useCallback((event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
-    setTrackWidth(width);
+    const trackWidth = Platform.OS === 'web' ? width - KNOB_WIDTH : width;
+    setTrackWidth(trackWidth);
   }, []);
 
   return (
