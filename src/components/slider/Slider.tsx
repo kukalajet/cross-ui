@@ -105,11 +105,29 @@ const Slider = ({
   }));
 
   const animatedSelectionStyle = useAnimatedStyle(() => {
+    if (bounding) {
+      const left =
+        Platform.OS === 'web'
+          ? leadingPosition.value + KNOB_WIDTH / 2
+          : leadingPosition.value;
+      const right =
+        Platform.OS === 'web'
+          ? trailingPosition.value + KNOB_WIDTH / 2
+          : trailingPosition.value;
+
+      return { right, left };
+    }
+
     const right =
       Platform.OS === 'web'
         ? trackWidth - leadingPosition.value + KNOB_WIDTH / 2
         : trackWidth - leadingPosition.value;
-    return { right };
+    const left =
+      Platform.OS === 'web'
+        ? trackWidth - trailingPosition.value + KNOB_WIDTH / 2
+        : trackWidth - trailingPosition.value;
+
+    return { right, left };
   });
 
   const onLeadingKnobGestureHandler = useAnimatedGestureHandler<
