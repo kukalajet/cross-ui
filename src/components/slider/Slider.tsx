@@ -142,7 +142,7 @@ const Slider = ({
 
       const trailingKnobBound =
         bounding &&
-        value > trackWidth - trailingPosition.value - KNOB_WIDTH - interval;
+        value > trackWidth - trailingPosition.value - interval + KNOB_WIDTH / 2;
       const trackBound = value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH;
       if (trailingKnobBound || trackBound) return;
 
@@ -168,7 +168,7 @@ const Slider = ({
 
       const leadingKnobBound =
         bounding &&
-        value > trackWidth - leadingPosition.value - KNOB_WIDTH - interval;
+        value > trackWidth - leadingPosition.value - interval + KNOB_WIDTH / 2;
       const trackBound = value < -KNOB_WIDTH || value > trackWidth + KNOB_WIDTH;
       if (leadingKnobBound || trackBound) return;
 
