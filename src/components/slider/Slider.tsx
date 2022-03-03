@@ -82,7 +82,10 @@ const Slider = ({
   }, []);
 
   const handleSecondarySliderValue = useCallback((value: number) => {
-    handleSliderValueChanged(value, setTrailingValue);
+    handleSliderValueChanged(value, (value) => {
+      const actual = maximum - (value - minimum);
+      setTrailingValue(actual);
+    });
   }, []);
 
   useAnimatedReaction(
@@ -128,6 +131,22 @@ const Slider = ({
         : trackWidth - trailingPosition.value;
 
     return { right, left };
+  });
+
+  const animatedLeadingValuePosition = useAnimatedStyle(() => {
+    const left =
+      Platform.OS === 'web'
+        ? leadingPosition.value + KNOB_WIDTH / 2
+        : leadingPosition.value + KNOB_WIDTH / 8;
+    return { left };
+  });
+
+  const animatedTrailingValuePosition = useAnimatedStyle(() => {
+    const right =
+      Platform.OS === 'web'
+        ? trailingPosition.value + KNOB_WIDTH / 2
+        : trailingPosition.value + KNOB_WIDTH / 8;
+    return { right };
   });
 
   const onLeadingKnobGestureHandler = useAnimatedGestureHandler<
@@ -190,11 +209,7 @@ const Slider = ({
 
   return (
     <React.Fragment>
-      <Header>
-        <Label>{label}</Label>
-        <Value>Primary: {leadingValue}</Value>
-        {bounding && <Value>Secondary: {trailingValue}</Value>}
-      </Header>
+      <Label>{label}</Label>
       <SliderContainer width={width} containerSx={containerSx}>
         <Track onLayout={handleTrackOnLayout} />
         <Selection style={animatedSelectionStyle} />
@@ -207,19 +222,20 @@ const Slider = ({
           </PanGestureHandler>
         )}
       </SliderContainer>
+      <ValueContainer width={width}>
+        <Value style={animatedLeadingValuePosition}>{leadingValue}</Value>
+        {bounding && (
+          <Value style={animatedTrailingValuePosition}>{trailingValue}</Value>
+        )}
+      </ValueContainer>
     </React.Fragment>
   );
 };
 
-const Header = styled(View)(() => ({
+const Label = styled(H4)(() => ({
   px: KNOB_WIDTH / 2,
   py: '$4',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
 }));
-
-const Label = styled(H4)(() => ({}));
-const Value = styled(H4)(() => ({}));
 
 type SliderContainerProps = { width: number | string; containerSx?: SxProp };
 const SliderContainer = styled(View)(
@@ -230,6 +246,7 @@ const SliderContainer = styled(View)(
         width,
         paddingHorizontal: KNOB_WIDTH / 2,
         justifyContent: 'center',
+        zIndex: 1,
       },
       !!containerSx && sx(containerSx),
     ]);
@@ -237,6 +254,13 @@ const SliderContainer = styled(View)(
     return flattened;
   }
 );
+
+type ValueContainerProps = { width: number | string };
+const ValueContainer = styled(View)(({ width }: ValueContainerProps) => ({
+  width,
+  py: '$5',
+  justifyContent: 'center',
+}));
 
 const Knob = styled(Animated.View)(() => ({
   position: 'absolute',
@@ -262,6 +286,12 @@ const Selection = styled(Animated.View)(() => ({
   height: KNOB_WIDTH / 4,
   borderRadius: theme.space.$2,
   backgroundColor: '$secondaryVariant',
+}));
+
+const Value = styled(Animated.Text)(() => ({
+  top: '$4',
+  position: 'absolute',
+  textAlign: 'center',
 }));
 
 function withPointers(value: number, points: number[]): number {
