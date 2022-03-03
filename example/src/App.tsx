@@ -34,7 +34,12 @@ export default function App() {
     <CrossProvider>
       <View style={styles.container}>
         {/* <Slider containerSx={{ marginVertical: 16 }} /> */}
-        <Slider label={'Test'} minimum={18} maximum={50} />
+        <Slider
+          label={'Test'}
+          minimum={18}
+          maximum={50}
+          onChangeSelection={(value) => console.log(value)}
+        />
         {/* <Slider label={'Test'} minimum={18} maximum={50} steps={4} /> */}
         {/* <Slider label={'Test'} minimum={1018} maximum={1050} steps={32} /> */}
         {/* <Slider containerSx={{ marginVertical: 16 }} />

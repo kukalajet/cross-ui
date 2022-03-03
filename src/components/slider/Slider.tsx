@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { styled, useSx, View, H4 } from 'dripsy';
 import Animated, {
@@ -19,6 +19,8 @@ import type { LayoutChangeEvent } from 'react-native';
 
 const KNOB_WIDTH = 24;
 
+type Selection = number | { leading: number; trailing: number };
+
 type Props = {
   label: string;
   minimum: number;
@@ -26,6 +28,7 @@ type Props = {
   steps: number;
   width?: number | string;
   bounding?: boolean;
+  onChangeSelection: (value: Selection) => void;
   containerSx?: SxProp;
 };
 
@@ -36,6 +39,7 @@ const Slider = ({
   steps: _steps,
   width = '100%',
   bounding = true,
+  onChangeSelection,
   containerSx,
 }: Props) => {
   const [trackWidth, setTrackWidth] = useState<number>(0);
@@ -75,6 +79,17 @@ const Slider = ({
     return points;
   }, [steps, trackWidth]);
 
+  useEffect(() => {
+    if (!bounding) {
+      if (!leadingValue) return;
+      handleChangeSelection(leadingValue);
+      return;
+    }
+
+    if (!leadingValue || !trailingValue) return;
+    handleChangeSelection({ leading: leadingValue, trailing: trailingValue });
+  }, [leadingValue, trailingValue]);
+
   const handleSliderValueChanged = useCallback(
     (index: number, set: (value: number) => void) => {
       const value = values[index];
@@ -93,6 +108,13 @@ const Slider = ({
       setTrailingValue(actual);
     });
   }, []);
+
+  const handleChangeSelection = useCallback(
+    (value: Selection) => {
+      onChangeSelection(value);
+    },
+    [onChangeSelection]
+  );
 
   useAnimatedReaction(
     () => leadingPosition.value,
