@@ -33,7 +33,7 @@ const Slider = ({
   label,
   minimum = 0,
   maximum = 100,
-  steps = 10,
+  steps: _steps,
   width = '100%',
   bounding = true,
   containerSx,
@@ -43,6 +43,12 @@ const Slider = ({
   const [trailingValue, setTrailingValue] = useState<number | undefined>();
   const leadingPosition = useSharedValue<number>(0);
   const trailingPosition = useSharedValue<number>(trackWidth);
+
+  const steps: number = useMemo(() => {
+    if (_steps) return _steps;
+    const steps = Math.round(maximum - minimum);
+    return steps;
+  }, [_steps, minimum, maximum]);
 
   const values: number[] = useMemo(() => {
     const interval = (maximum - minimum) / steps;
