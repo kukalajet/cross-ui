@@ -40,6 +40,7 @@ export default function App() {
           maximum={50}
           onChangeSelection={(value) => console.log(value)}
         />
+        <Button label="OK" type="tonal" onPress={() => setModalOpen(true)} />
         {/* <Slider label={'Test'} minimum={18} maximum={50} steps={4} /> */}
         {/* <Slider label={'Test'} minimum={1018} maximum={1050} steps={32} /> */}
         {/* <Slider containerSx={{ marginVertical: 16 }} />

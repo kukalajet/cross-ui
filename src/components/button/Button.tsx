@@ -10,24 +10,24 @@ export type Type = 'elevated' | 'filled' | 'tonal' | 'outlined' | 'text';
 type Props = {
   type?: Type;
   label?: string;
-  icon?: IconType;
-  iconPosition?: IconPosition;
   width?: string | number;
   height?: string | number;
+  textColor?: string;
+  icon?: IconType;
+  iconPosition?: IconPosition;
   onPress: () => void;
   backgroundColor?: string;
-  textColor?: string;
 };
 
 const Button = ({
   type = 'filled',
   label,
-  icon,
-  iconPosition = 'start',
   width,
   height,
-  onPress,
   textColor,
+  icon,
+  iconPosition = 'start',
+  onPress,
   backgroundColor,
 }: Props): ReactElement<Props> => {
   const [pressed, setPressed] = useState<boolean>(false);
