@@ -38,7 +38,7 @@ const Slider = ({
   maximum = 100,
   steps: _steps,
   width = '100%',
-  bounding = true,
+  bounding = false,
   onChangeSelection,
   containerSx,
 }: Props) => {
