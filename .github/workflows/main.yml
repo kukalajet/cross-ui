@@ -17,5 +17,3 @@ jobs:
           scrope: '@kukalajet'
       - run: npm install
       - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secret.GITHUB_TOKEN}}
