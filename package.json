@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/kukalajet/cross-ui#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.pkg.github.com/@hapseer"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
