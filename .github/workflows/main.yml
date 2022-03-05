@@ -17,3 +17,5 @@ jobs:
           scrope: '@kukalajet'
       - run: npm install --legacy-peer-deps
       - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
