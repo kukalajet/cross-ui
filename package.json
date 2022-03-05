@@ -1,5 +1,5 @@
 {
-  "name": "cross-ui",
+  "name": "@kukalajet/cross-ui",
   "version": "0.1.0",
   "description": "A cross platform component library",
   "main": "lib/commonjs/index",
@@ -36,7 +36,7 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/kukalajet/cross-ui",
+  "repository": "https://github.com/kukalajet/cross-ui.git",
   "author": "Jeton <jeton.kukalaj@gmail.com> (https://github.com/kukalajet)",
   "license": "MIT",
   "bugs": {
