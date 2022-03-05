@@ -137,27 +137,13 @@ const Slider = ({
 
   const animatedSelectionStyle = useAnimatedStyle(() => {
     if (bounding) {
-      const left =
-        Platform.OS === 'web'
-          ? leadingPosition.value + KNOB_WIDTH / 2
-          : leadingPosition.value;
-      const right =
-        Platform.OS === 'web'
-          ? trailingPosition.value + KNOB_WIDTH / 2
-          : trailingPosition.value;
-
+      const left = leadingPosition.value;
+      const right = trailingPosition.value;
       return { right, left };
     }
 
-    const right =
-      Platform.OS === 'web'
-        ? trackWidth - leadingPosition.value + KNOB_WIDTH / 2
-        : trackWidth - leadingPosition.value;
-    const left =
-      Platform.OS === 'web'
-        ? trackWidth - trailingPosition.value + KNOB_WIDTH / 2
-        : trackWidth - trailingPosition.value;
-
+    const right = trackWidth - leadingPosition.value;
+    const left = trackWidth - trailingPosition.value;
     return { right, left };
   });
 
@@ -231,8 +217,7 @@ const Slider = ({
 
   const handleTrackOnLayout = useCallback((event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
-    const trackWidth = Platform.OS === 'web' ? width - KNOB_WIDTH : width;
-    setTrackWidth(trackWidth);
+    setTrackWidth(width);
   }, []);
 
   return (
@@ -272,7 +257,6 @@ const SliderContainer = styled(View)(
     const flattened = StyleSheet.flatten([
       {
         width,
-        paddingHorizontal: KNOB_WIDTH / 2,
         justifyContent: 'center',
         zIndex: 1,
       },

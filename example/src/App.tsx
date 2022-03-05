@@ -36,8 +36,9 @@ export default function App() {
         {/* <Slider containerSx={{ marginVertical: 16 }} /> */}
         <Slider
           label={'Test'}
-          minimum={18}
-          maximum={50}
+          minimum={20}
+          maximum={60}
+          steps={4}
           onChangeSelection={(value) => console.log(value)}
         />
         <Button label="OK" type="tonal" onPress={() => setModalOpen(true)} />
