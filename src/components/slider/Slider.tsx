@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
-import { styled, useSx, View, H4 } from 'dripsy';
+import { StyleSheet } from 'react-native';
+import { styled, useSx, View, H4, Text } from 'dripsy';
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -45,6 +45,8 @@ const Slider = ({
   const [trackWidth, setTrackWidth] = useState<number>(0);
   const [leadingValue, setLeadingValue] = useState<number | undefined>();
   const [trailingValue, setTrailingValue] = useState<number | undefined>();
+  const [leadingValueHeight, setLeadingValueHeight] = useState<number>(0);
+  const [trailingValueHeight, setTrailingValueHeight] = useState<number>(0);
   const leadingPosition = useSharedValue<number>(0);
   const trailingPosition = useSharedValue<number>(trackWidth);
 
@@ -147,22 +149,6 @@ const Slider = ({
     return { right, left };
   });
 
-  const animatedLeadingValuePosition = useAnimatedStyle(() => {
-    const left =
-      Platform.OS === 'web'
-        ? leadingPosition.value + KNOB_WIDTH / 2
-        : leadingPosition.value + KNOB_WIDTH / 8;
-    return { left };
-  });
-
-  const animatedTrailingValuePosition = useAnimatedStyle(() => {
-    const right =
-      Platform.OS === 'web'
-        ? trailingPosition.value + KNOB_WIDTH / 2
-        : trailingPosition.value + KNOB_WIDTH / 8;
-    return { right };
-  });
-
   const onLeadingKnobGestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     { offsetX: number }
@@ -220,6 +206,19 @@ const Slider = ({
     setTrackWidth(width);
   }, []);
 
+  const handleLeadingValueOnLayout = useCallback((event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    setLeadingValueHeight(height);
+  }, []);
+
+  const handleTrailingValueOnLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const { height } = event.nativeEvent.layout;
+      setTrailingValueHeight(height);
+    },
+    []
+  );
+
   return (
     <React.Fragment>
       <Label>{label}</Label>
@@ -227,20 +226,28 @@ const Slider = ({
         <Track onLayout={handleTrackOnLayout} />
         {bounding && <Selection style={animatedSelectionStyle} />}
         <PanGestureHandler onGestureEvent={onLeadingKnobGestureHandler}>
-          <Knob style={animatedLeadingKnobStyle} />
+          <KnobContainer
+            paddingTop={leadingValueHeight}
+            style={animatedLeadingKnobStyle}
+          >
+            <Knob />
+            <Value onLayout={handleLeadingValueOnLayout}>{leadingValue}</Value>
+          </KnobContainer>
         </PanGestureHandler>
         {bounding && (
           <PanGestureHandler onGestureEvent={onTrailingKnobGestureHandler}>
-            <Knob style={animatedTrailingKnobStyle} />
+            <KnobContainer
+              paddingTop={trailingValueHeight}
+              style={animatedTrailingKnobStyle}
+            >
+              <Knob />
+              <Value onLayout={handleTrailingValueOnLayout}>
+                {trailingValue}
+              </Value>
+            </KnobContainer>
           </PanGestureHandler>
         )}
       </SliderContainer>
-      <ValueContainer width={width}>
-        <Value style={animatedLeadingValuePosition}>{leadingValue}</Value>
-        {bounding && (
-          <Value style={animatedTrailingValuePosition}>{trailingValue}</Value>
-        )}
-      </ValueContainer>
     </React.Fragment>
   );
 };
@@ -267,20 +274,20 @@ const SliderContainer = styled(View)(
   }
 );
 
-type ValueContainerProps = { width: number | string };
-const ValueContainer = styled(View)(({ width }: ValueContainerProps) => ({
-  width,
-  py: '$5',
-  justifyContent: 'center',
-}));
-
-const Knob = styled(Animated.View)(() => ({
-  position: 'absolute',
+const Knob = styled(View)(() => ({
   height: KNOB_WIDTH,
   width: KNOB_WIDTH,
   borderRadius: KNOB_WIDTH / 2,
   backgroundColor: theme.colors.$secondary,
 }));
+
+type KnobContainerProps = { paddingTop: number };
+const KnobContainer = styled(Animated.View)(
+  ({ paddingTop }: KnobContainerProps) => ({
+    position: 'absolute',
+    paddingTop,
+  })
+);
 
 const Track = styled(View)(() => ({
   position: 'absolute',
@@ -300,11 +307,7 @@ const Selection = styled(Animated.View)(() => ({
   backgroundColor: '$secondaryVariant',
 }));
 
-const Value = styled(Animated.Text)(() => ({
-  top: '$4',
-  position: 'absolute',
-  textAlign: 'center',
-}));
+const Value = styled(Text)(() => ({ textAlign: 'center' }));
 
 function withPointers(value: number, points: number[]): number {
   'worklet';
