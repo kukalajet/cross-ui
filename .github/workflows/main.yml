@@ -15,5 +15,5 @@ jobs:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
           scrope: '@kukalajet'
-      - run: npm install
+      - run: npm install --legacy-peer-deps
       - run: npm publish
