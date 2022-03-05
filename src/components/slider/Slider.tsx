@@ -240,7 +240,7 @@ const Slider = ({
       <Label>{label}</Label>
       <SliderContainer width={width} containerSx={containerSx}>
         <Track onLayout={handleTrackOnLayout} />
-        <Selection style={animatedSelectionStyle} />
+        {bounding && <Selection style={animatedSelectionStyle} />}
         <PanGestureHandler onGestureEvent={onLeadingKnobGestureHandler}>
           <Knob style={animatedLeadingKnobStyle} />
         </PanGestureHandler>
