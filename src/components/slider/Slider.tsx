@@ -222,7 +222,11 @@ const Slider = ({
   return (
     <React.Fragment>
       <Label>{label}</Label>
-      <SliderContainer width={width} containerSx={containerSx}>
+      <SliderContainer
+        width={width}
+        marginBottom={leadingValueHeight + KNOB_WIDTH}
+        containerSx={containerSx}
+      >
         <Track onLayout={handleTrackOnLayout} />
         {bounding && <Selection style={animatedSelectionStyle} />}
         <PanGestureHandler onGestureEvent={onLeadingKnobGestureHandler}>
@@ -257,15 +261,20 @@ const Label = styled(H4)(() => ({
   py: '$4',
 }));
 
-type SliderContainerProps = { width: number | string; containerSx?: SxProp };
+type SliderContainerProps = {
+  width: number | string;
+  marginBottom: number;
+  containerSx?: SxProp;
+};
 const SliderContainer = styled(View)(
-  ({ width, containerSx }: SliderContainerProps) => {
+  ({ width, marginBottom, containerSx }: SliderContainerProps) => {
     const sx = useSx();
     const flattened = StyleSheet.flatten([
       {
         width,
         justifyContent: 'center',
         zIndex: 1,
+        marginBottom,
       },
       !!containerSx && sx(containerSx),
     ]);

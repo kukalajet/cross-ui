@@ -17,7 +17,7 @@ import {
   Modal,
   Select,
   Slider,
-} from 'cross-ui';
+} from '@kukalajet/cross-ui';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 type Test = { color: string };
@@ -41,7 +41,7 @@ export default function App() {
           steps={4}
           onChangeSelection={(value) => console.log(value)}
         />
-        {/* <Button label="OK" type="tonal" onPress={() => setModalOpen(true)} /> */}
+        <Button label="OK" type="tonal" onPress={() => setModalOpen(true)} />
         {/* <Slider label={'Test'} minimum={18} maximum={50} steps={4} /> */}
         {/* <Slider label={'Test'} minimum={1018} maximum={1050} steps={32} /> */}
         {/* <Slider containerSx={{ marginVertical: 16 }} />
@@ -87,75 +87,75 @@ export default function App() {
               type="tonal"
               onPress={() => setModalOpen(true)}
             />
-          </View>
-          <Modal
-            open={modalOpen}
-            label="Modal"
-            withScrollView
-            onDismiss={() => setModalOpen(false)}
-            onRemove={() => setModalOpen(false)}
-          >
-            <React.Fragment>
-              <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <TextInput
-                  label="Test"
-                  initialValue="test"
-                  width="25%"
-                  error="test error"
-                  pressable={true}
-                  multiline={true}
-                />
-              </View>
-              <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <TextInput
-                  label="Test"
-                  initialValue="test"
-                  width="50%"
-                  pressable={true}
-                  multiline={true}
-                />
-              </View>
-              <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <TextInput
-                  label="Test"
-                  initialValue="test"
-                  width="100%"
-                  pressable={true}
-                  multiline={true}
-                />
-              </View>
-              <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <TextInput
-                  label="Test"
-                  initialValue="test"
-                  width="25%"
-                  error="test error"
-                  pressable={true}
-                  multiline={true}
-                />
-              </View>
-              <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <TextInput
-                  label="Test"
-                  initialValue="test"
-                  width="50%"
-                  pressable={true}
-                  multiline={true}
-                />
-              </View>
-              <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-                <TextInput
-                  label="Test"
-                  initialValue="test"
-                  width="100%"
-                  pressable={true}
-                  multiline={true}
-                  disabled={true}
-                />
-              </View>
-            </React.Fragment>
-          </Modal>
-          <Text>Result: {result}</Text>
+          </View>*/}
+        <Modal
+          open={modalOpen}
+          label="Modal"
+          withScrollView
+          onDismiss={() => setModalOpen(false)}
+          onRemove={() => setModalOpen(false)}
+        >
+          <React.Fragment>
+            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+              <TextInput
+                label="Test"
+                initialValue="test"
+                width="25%"
+                error="test error"
+                pressable={true}
+                multiline={true}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+              <TextInput
+                label="Test"
+                initialValue="test"
+                width="50%"
+                pressable={true}
+                multiline={true}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+              <TextInput
+                label="Test"
+                initialValue="test"
+                width="100%"
+                pressable={true}
+                multiline={true}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+              <TextInput
+                label="Test"
+                initialValue="test"
+                width="25%"
+                error="test error"
+                pressable={true}
+                multiline={true}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+              <TextInput
+                label="Test"
+                initialValue="test"
+                width="50%"
+                pressable={true}
+                multiline={true}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+              <TextInput
+                label="Test"
+                initialValue="test"
+                width="100%"
+                pressable={true}
+                multiline={true}
+                disabled={true}
+              />
+            </View>
+          </React.Fragment>
+        </Modal>
+        {/*<Text>Result: {result}</Text>
           <View
             style={{
               paddingVertical: 8,
